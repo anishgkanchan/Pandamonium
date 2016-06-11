@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<color name="light_green">#0ca18a</color>    
+<color name="dark_green">#0c7c66</color>
+<color name="back_green">#a4e17f</color>
+<color name= "back_skin">#e8e1b5</color>
+<color name= "light_brown">#b6b48a</color>
+<color name= "dark_brown">#8b8666</color>
+
+</resources>

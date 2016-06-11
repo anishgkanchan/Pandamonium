@@ -1,0 +1,408 @@
+package com.example.boardg;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.res.Resources;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.example.logic.AlphaLogic;
+
+public class GameScreenActivity extends Activity {
+	char playerState[][] = new char[][] { { '*', '*', '*', '*', '*' },
+			{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' },
+			{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' } };
+	int movesPlayed = 0; // can have a max value of 25, to identify end of game
+	int pScore[][] = new int[5][5];
+	GridView gridView;
+	AlphaLogic logic = null;
+	boolean playable = true;
+	boolean singleplayer = true;
+	private int difficulty;
+	boolean player1 = true;
+	TextView playerScore;
+	TextView opponentScore;
+	GridViewAdapter adapter;
+	AlertDialog.Builder alertDialogBuilder;
+	List<Nishant> list;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		logic = new AlphaLogic();
+		singleplayer = getIntent().getBooleanExtra("single_player", true);
+		difficulty = getIntent().getIntExtra("difficulty", 1);
+		
+		alertDialogBuilder = new AlertDialog.Builder(
+				this);
+
+
+			// set dialog message
+			alertDialogBuilder
+				.setMessage("Play Again?")
+				.setCancelable(false)
+				.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						// if this button is clicked, just close
+						// the dialog box and refresh the board
+						init ();
+						adapter.notifyDataSetChanged();
+					}
+				  })
+				.setNegativeButton("No",new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog,int id) {
+						// if this button is clicked, close
+						// current activity
+						GameScreenActivity.this.finish();
+					}
+				});
+
+				
+		if (difficulty==4){
+			System.out.println(difficulty);
+			difficulty = 5;
+		}
+		// Remove notification bar
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_game_screen);
+		gridView = (GridView) findViewById(R.id.boardgrid);
+		playerScore = (TextView) findViewById(R.id.playerScore);
+		opponentScore = (TextView) findViewById(R.id.opponentScore);
+		Resources res = getResources();
+		
+		
+		init();
+		
+		gridView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				if (singleplayer) {
+					if (list.get(position).getImage() == 0 && playable && movesPlayed < 25) {
+						
+						Nishant object = new Nishant();
+						object.setImage(R.drawable.player1);
+						if (logic.isRaid(position / 5, position % 5,
+								playerState, 'O')) {
+							int x = position / 5;
+							int y = position % 5;
+							char[][] templayer = playerState.clone();
+							for (int i = 0; i < playerState.length; i++) {
+								System.out.println(Arrays
+										.toString(playerState[i]));
+							}
+							playerState = logic.raid(position / 5,
+									position % 5, 'O', playerState, templayer);
+							System.out.println("after raid");
+							for (int i = 0; i < playerState.length; i++) {
+								System.out.println(Arrays
+										.toString(playerState[i]));
+							}
+							if (x - 1 >= 0
+									&& playerState[position / 5 - 1][position % 5] == 'O')
+								list.get((x - 1) * 5 + y).setImage(
+										R.drawable.player1);
+							if (x + 1 <= 4
+									&& playerState[position / 5 + 1][position % 5] == 'O')
+								list.get((x + 1) * 5 + y).setImage(
+										R.drawable.player1);
+							if (y - 1 >= 0
+									&& playerState[position / 5][position % 5 - 1] == 'O')
+								list.get(x * 5 + y - 1).setImage(
+										R.drawable.player1);
+							if (y + 1 <= 4
+									&& playerState[position / 5][position % 5 + 1] == 'O')
+								list.get(x * 5 + y + 1).setImage(
+										R.drawable.player1);
+						}
+						System.out.println("Was not a raid");
+						playerState[position / 5][position % 5] = 'O';
+						object.setScore(list.get(position).getScore());
+						list.set(position, object);
+						movesPlayed+=1;
+						
+						final Handler h = new Handler();
+
+						final Runnable r2 = new Runnable() {
+
+							@Override
+							public void run() {
+								if (movesPlayed<25)
+								{
+									playerState = logic.CallAlpha(pScore, playerState, difficulty, 'X', -99999, 99999);
+									movesPlayed+=1;
+									
+									for (int i = 0; i < 25; i++) {
+										int x = i / 5;
+										int y = i % 5;
+										if (playerState[x][y] == 'X')
+											list.get(i)
+													.setImage(R.drawable.player2);
+									}
+									final String data = String.format(
+											getResources().getString(
+													R.string.opponent_score), logic
+													.getScore(pScore, playerState,
+															'X'));
+									final String text = String.format(
+											getResources().getString(
+													R.string.player_score), logic
+													.getScore(pScore, playerState,
+															'O'));
+									opponentScore.setText(data);
+									playerScore.setText(text);
+									adapter.notifyDataSetChanged();
+									playable = true;
+								}
+								else {
+
+									// set title
+									if(logic
+									.getScore(pScore, playerState, 'X')>logic
+									.getScore(pScore, playerState, 'O'))
+										alertDialogBuilder.setTitle("Your Lost");
+									else
+										alertDialogBuilder.setTitle("Your Won!");
+
+
+									// create alert dialog
+									AlertDialog alertDialog = alertDialogBuilder.create();
+									alertDialog.show();
+								}
+							}
+						};
+
+						Runnable r1 = new Runnable() {
+
+							@Override
+							public void run() {
+								playable = false;
+								adapter.notifyDataSetChanged();
+								final String text = String.format(
+										getResources().getString(
+												R.string.player_score), logic
+												.getScore(pScore, playerState,
+														'O'));
+								final String data = String.format(
+										getResources().getString(
+												R.string.opponent_score), logic
+												.getScore(pScore, playerState,
+														'X'));
+
+								playerScore.setText(text);
+								opponentScore.setText(data);
+								h.postDelayed(r2, 1500); // 10 second delay
+							}
+						};
+
+						h.postDelayed(r1, 0);
+
+					}
+				} else {
+					char player;
+					int playerImage;
+					if (player1) {
+						player = 'O';
+						playerImage = R.drawable.player1;
+						player1 = false;
+					} else {
+						player = 'X';
+						playerImage = R.drawable.player2;
+						player1 = true;
+					}
+					if (list.get(position).getImage() == 0) {
+						Nishant object = new Nishant();
+						object.setImage(playerImage);
+						if (logic.isRaid(position / 5, position % 5,
+								playerState, player)) {
+							int x = position / 5;
+							int y = position % 5;
+							char[][] templayer = playerState.clone();
+							for (int i = 0; i < playerState.length; i++) {
+								System.out.println(Arrays
+										.toString(playerState[i]));
+							}
+							playerState = logic.raid(position / 5,
+									position % 5, player, playerState,
+									templayer);
+							System.out.println("after raid");
+							for (int i = 0; i < playerState.length; i++) {
+								System.out.println(Arrays
+										.toString(playerState[i]));
+							}
+							if (x - 1 >= 0
+									&& playerState[position / 5 - 1][position % 5] == player)
+								list.get((x - 1) * 5 + y).setImage(playerImage);
+							if (x + 1 <= 4
+									&& playerState[position / 5 + 1][position % 5] == player)
+								list.get((x + 1) * 5 + y).setImage(playerImage);
+							if (y - 1 >= 0
+									&& playerState[position / 5][position % 5 - 1] == player)
+								list.get(x * 5 + y - 1).setImage(playerImage);
+							if (y + 1 <= 4
+									&& playerState[position / 5][position % 5 + 1] == player)
+								list.get(x * 5 + y + 1).setImage(playerImage);
+						}
+						System.out.println("Was not a raid");
+						playerState[position / 5][position % 5] = player;
+						object.setScore(list.get(position).getScore());
+						list.set(position, object);
+						adapter.notifyDataSetChanged();
+						final String text = String.format(getResources()
+								.getString(R.string.player_score), logic
+								.getScore(pScore, playerState, 'O'));
+						final String data = String.format(getResources()
+								.getString(R.string.opponent_score), logic
+								.getScore(pScore, playerState, 'X'));
+
+						playerScore.setText(text);
+						opponentScore.setText(data);
+
+					}
+				}
+			}
+		});
+		gridView.setAdapter(adapter);
+	}
+	
+	void init () {
+		list = new ArrayList<Nishant>();
+		Resources res = getResources();
+		String playertext = String.format(res.getString(R.string.player_score),
+				0);
+		String opponentText = String.format(
+				res.getString(R.string.opponent_score), 0);
+
+		playerScore.setText(playertext);
+		opponentScore.setText(opponentText);
+		Random rand = new Random();
+		for (int i = 0; i < 25; i++) {
+			Nishant gridData = new Nishant();
+			gridData.setImage(0);
+			gridData.setScore(rand.nextInt(100));
+			list.add(gridData);
+			pScore[i / 5][i % 5] = gridData.getScore();
+		}
+		movesPlayed =0;
+		playerState= new char[][] { { '*', '*', '*', '*', '*' },
+				{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' },
+				{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' } };
+		playable =true;
+		adapter = new GridViewAdapter(this, R.layout.griditem_layout, list);
+		gridView.setAdapter(adapter);
+
+	}
+	
+	class GridViewAdapter extends BaseAdapter {
+		private Context context;
+		private int layoutResourceId;
+		private LayoutInflater mLayoutInflater = null;
+		private ArrayList<Nishant> mList;
+
+		public GridViewAdapter(Context context, int resourceId,
+				List<Nishant> list) {
+
+			this.context = context;
+			layoutResourceId = resourceId;
+			mList = (ArrayList<Nishant>) list;
+			mLayoutInflater = (LayoutInflater) context
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		}
+
+		class ViewHolder {
+			TextView imageTitle;
+			ImageView image;
+		}
+
+		@Override
+		public int getCount() {
+			return mList.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return mList.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View row = convertView;
+			ViewHolder holder = null;
+
+			if (row == null) {
+				LayoutInflater inflater = ((Activity) context)
+						.getLayoutInflater();
+				row = inflater.inflate(layoutResourceId, parent, false);
+				holder = new ViewHolder();
+				holder.imageTitle = (TextView) row
+						.findViewById(R.id.tile_score);
+				holder.image = (ImageView) row.findViewById(R.id.player_icon);
+
+				row.setTag(holder);
+			} else {
+				holder = (ViewHolder) row.getTag();
+			}
+
+			Nishant item = mList.get(position);
+			if (position % 2 == 0)
+				row.setBackgroundColor(getResources().getColor(
+						R.color.light_brown));
+			else
+				row.setBackgroundColor(getResources().getColor(
+						R.color.dark_brown));
+			holder.imageTitle.setText(item.getScore() + "");
+			holder.image.setBackgroundResource(item.getImage());
+			holder.image.setImageResource(item.getImage());
+			return row;
+		}
+	}
+
+	class Nishant {
+		private int score;
+		private int imageId;
+
+		public int getScore() {
+			return score;
+		}
+
+		public void setScore(int score) {
+			this.score = score;
+		}
+
+		public int getImage() {
+			return imageId;
+		}
+
+		public void setImage(int image) {
+			this.imageId = image;
+		}
+
+	}
+
+}

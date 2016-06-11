@@ -1,0 +1,66 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/back_skin"
+    android:gravity="center_vertical"
+    tools:context="com.example.boardg.Options2Activity" >
+
+    <Button
+        android:id="@+id/singlePlayer"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/button"
+        android:text="Single Player" />
+
+    <Button
+        android:id="@+id/multiPlayer"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/button"
+        android:layout_marginBottom="15dp"
+        android:text="Two Player" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_height="wrap_content">
+        
+        <ImageView android:layout_height="wrap_content"
+            android:id="@+id/lft_arrow"
+            android:layout_width="wrap_content"
+            android:src="@drawable/left"
+            
+            android:layout_weight="1"></ImageView>
+        
+        <TextView 
+            android:id="@+id/txt_dificulty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dark_green"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:text="Easy"
+            android:textSize="18sp"
+            android:layout_weight="2"/>
+        
+        <ImageView android:layout_height="wrap_content"
+            android:id="@+id/rght_arrow"
+            android:layout_width="wrap_content"
+            android:src="@drawable/right"
+            android:layout_weight="1"/>
+        
+        
+    </LinearLayout>
+
+</LinearLayout>
