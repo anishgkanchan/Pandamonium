@@ -27,7 +27,7 @@
         android:id="@+id/btn_how2play"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@drawable/button"
+        android:background="@drawable/buttonselector"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginBottom="15dp"
@@ -36,7 +36,7 @@
   	<Button 
         android:id="@+id/btn_play"
         android:layout_width="match_parent"
-        android:background="@drawable/button"
+        android:background="@drawable/buttonselector"
         android:layout_height="50dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"

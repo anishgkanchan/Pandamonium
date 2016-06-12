@@ -2,6 +2,7 @@ package com.example.boardg;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -12,8 +13,10 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -30,6 +33,8 @@ public class GameScreenActivity extends Activity {
 	char playerState[][] = new char[][] { { '*', '*', '*', '*', '*' },
 			{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' },
 			{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' } };
+
+	char[][] oldPlayerState = new char[5][5];
 	int movesPlayed = 0; // can have a max value of 25, to identify end of game
 	int pScore[][] = new int[5][5];
 	GridView gridView;
@@ -39,44 +44,44 @@ public class GameScreenActivity extends Activity {
 	private int difficulty;
 	boolean player1 = true;
 	TextView playerScore;
+	ImageView undoImageView;
 	TextView opponentScore;
 	GridViewAdapter adapter;
 	AlertDialog.Builder alertDialogBuilder;
 	List<Nishant> list;
+	List<Nishant> prevList;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		logic = new AlphaLogic();
 		singleplayer = getIntent().getBooleanExtra("single_player", true);
 		difficulty = getIntent().getIntExtra("difficulty", 1);
-		
-		alertDialogBuilder = new AlertDialog.Builder(
-				this);
 
+		alertDialogBuilder = new AlertDialog.Builder(this);
 
-			// set dialog message
-			alertDialogBuilder
+		// set dialog message
+		alertDialogBuilder
 				.setMessage("Play Again?")
 				.setCancelable(false)
-				.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,int id) {
-						// if this button is clicked, just close
-						// the dialog box and refresh the board
-						init ();
-						adapter.notifyDataSetChanged();
-					}
-				  })
-				.setNegativeButton("No",new DialogInterface.OnClickListener()
-				{
-					public void onClick(DialogInterface dialog,int id) {
+				.setPositiveButton("Yes",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								// if this button is clicked, just close
+								// the dialog box and refresh the board
+								init();
+								adapter.notifyDataSetChanged();
+							}
+						})
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
 						// if this button is clicked, close
 						// current activity
 						GameScreenActivity.this.finish();
 					}
 				});
 
-				
-		if (difficulty==4){
+		if (difficulty == 4) {
 			System.out.println(difficulty);
 			difficulty = 5;
 		}
@@ -88,18 +93,64 @@ public class GameScreenActivity extends Activity {
 		gridView = (GridView) findViewById(R.id.boardgrid);
 		playerScore = (TextView) findViewById(R.id.playerScore);
 		opponentScore = (TextView) findViewById(R.id.opponentScore);
+		undoImageView = (ImageView) findViewById(R.id.undo_button);
 		Resources res = getResources();
-		
-		
+
 		init();
-		
+		undoImageView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				if (playable) {
+					for (int i = 0; i < 5; i++) {
+						for (int j = 0; j < 5; j++) {
+							playerState[i][j] = oldPlayerState[i][j];
+						}
+						System.out.println(Arrays.toString(playerState[i]));
+					}
+
+					copyStuff(list, prevList);
+					for (int i = 0; i < list.size(); i++)
+						System.out.println(list.get(i).imageId);
+					adapter.notifyDataSetChanged();
+					movesPlayed--;
+
+					Runnable r1 = new Runnable() {
+
+						@Override
+						public void run() {
+							final String text = String.format(getResources()
+									.getString(R.string.player_score), logic
+									.getScore(pScore, playerState, 'O'));
+							final String data = String.format(getResources()
+									.getString(R.string.opponent_score), logic
+									.getScore(pScore, playerState, 'X'));
+
+							playerScore.setText(text);
+							opponentScore.setText(data);
+						}
+					};
+					new Handler().postDelayed(r1, 0);
+				}
+			}
+		});
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				if (singleplayer) {
-					if (list.get(position).getImage() == 0 && playable && movesPlayed < 25) {
-						
+
+					if (list.get(position).getImage() == 0 && playable
+							&& movesPlayed < 25) {
+						for (int i = 0; i < 5; i++) {
+							for (int j = 0; j < 5; j++) {
+								oldPlayerState[i][j] = playerState[i][j];
+							}
+						}
+						copyStuff(prevList, list);
+						for (int i = 0; i < list.size(); i++)
+							System.out.println(prevList.get(i).imageId);
+
 						Nishant object = new Nishant();
 						object.setImage(R.drawable.player1);
 						if (logic.isRaid(position / 5, position % 5,
@@ -139,54 +190,68 @@ public class GameScreenActivity extends Activity {
 						playerState[position / 5][position % 5] = 'O';
 						object.setScore(list.get(position).getScore());
 						list.set(position, object);
-						movesPlayed+=1;
-						
+						movesPlayed += 1;
 						final Handler h = new Handler();
 
 						final Runnable r2 = new Runnable() {
 
 							@Override
 							public void run() {
-								if (movesPlayed<25)
-								{
-									playerState = logic.CallAlpha(pScore, playerState, difficulty, 'X', -99999, 99999);
-									movesPlayed+=1;
-									
+								if (movesPlayed < 25) {
+									playerState = logic.CallAlpha(pScore,
+											playerState, difficulty, 'X',
+											-99999, 99999);
+									movesPlayed += 1;
+									System.out.println("Computer plays 1"
+											+ prevList.size() + list.size());
+									for (int i = 0; i < list.size(); i++) {
+										Log.e("Le", prevList.get(i).imageId
+												+ "");
+									}
+
 									for (int i = 0; i < 25; i++) {
 										int x = i / 5;
 										int y = i % 5;
 										if (playerState[x][y] == 'X')
-											list.get(i)
-													.setImage(R.drawable.player2);
+											list.get(i).setImage(
+													R.drawable.player2);
+									}
+									for (int i = 0; i < list.size(); i++) {
+										Log.e("Le23", prevList.get(i).imageId
+												+ "");
 									}
 									final String data = String.format(
 											getResources().getString(
-													R.string.opponent_score), logic
-													.getScore(pScore, playerState,
-															'X'));
+													R.string.opponent_score),
+											logic.getScore(pScore, playerState,
+													'X'));
 									final String text = String.format(
 											getResources().getString(
-													R.string.player_score), logic
-													.getScore(pScore, playerState,
-															'O'));
+													R.string.player_score),
+											logic.getScore(pScore, playerState,
+													'O'));
 									opponentScore.setText(data);
 									playerScore.setText(text);
+									for (int i = 0; i < list.size(); i++)
+										System.out.print("Computer plays"
+												+ prevList.get(i).imageId);
 									adapter.notifyDataSetChanged();
 									playable = true;
-								}
-								else {
+								} else {
 
 									// set title
-									if(logic
-									.getScore(pScore, playerState, 'X')>logic
-									.getScore(pScore, playerState, 'O'))
-										alertDialogBuilder.setTitle("Your Lost");
+									if (logic
+											.getScore(pScore, playerState, 'X') > logic
+											.getScore(pScore, playerState, 'O'))
+										alertDialogBuilder
+												.setTitle("Your Lost");
 									else
-										alertDialogBuilder.setTitle("Your Won!");
-
+										alertDialogBuilder
+												.setTitle("Your Won!");
 
 									// create alert dialog
-									AlertDialog alertDialog = alertDialogBuilder.create();
+									AlertDialog alertDialog = alertDialogBuilder
+											.create();
 									alertDialog.show();
 								}
 							}
@@ -284,9 +349,17 @@ public class GameScreenActivity extends Activity {
 		});
 		gridView.setAdapter(adapter);
 	}
-	
-	void init () {
+
+	void copyStuff(List<Nishant> dest, List<Nishant> source) {
+		for (int i = 0; i < source.size(); i++) {
+			dest.set(i, new Nishant(source.get(i).getScore(), source.get(i)
+					.getImage()));
+		}
+	}
+
+	void init() {
 		list = new ArrayList<Nishant>();
+		prevList = new ArrayList<Nishant>();
 		Resources res = getResources();
 		String playertext = String.format(res.getString(R.string.player_score),
 				0);
@@ -301,18 +374,19 @@ public class GameScreenActivity extends Activity {
 			gridData.setImage(0);
 			gridData.setScore(rand.nextInt(100));
 			list.add(gridData);
+			prevList.add(gridData);
 			pScore[i / 5][i % 5] = gridData.getScore();
 		}
-		movesPlayed =0;
-		playerState= new char[][] { { '*', '*', '*', '*', '*' },
+		movesPlayed = 0;
+		playerState = new char[][] { { '*', '*', '*', '*', '*' },
 				{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' },
 				{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' } };
-		playable =true;
+		playable = true;
 		adapter = new GridViewAdapter(this, R.layout.griditem_layout, list);
 		gridView.setAdapter(adapter);
 
 	}
-	
+
 	class GridViewAdapter extends BaseAdapter {
 		private Context context;
 		private int layoutResourceId;
@@ -386,6 +460,14 @@ public class GameScreenActivity extends Activity {
 	class Nishant {
 		private int score;
 		private int imageId;
+
+		Nishant() {
+		}
+
+		Nishant(int source, int imageId) {
+			this.score = source;
+			this.imageId = imageId;
+		}
 
 		public int getScore() {
 			return score;

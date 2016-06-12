@@ -14,7 +14,7 @@
         android:layout_marginBottom="15dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:background="@drawable/button"
+        android:background="@drawable/buttonselector"
         android:text="Single Player" />
 
     <Button
@@ -23,7 +23,7 @@
         android:layout_height="50dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:background="@drawable/button"
+        android:background="@drawable/buttonselector"
         android:layout_marginBottom="15dp"
         android:text="Two Player" />
 
