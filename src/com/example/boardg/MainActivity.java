@@ -3,6 +3,7 @@ package com.example.boardg;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +20,10 @@ public class MainActivity extends Activity {
 	private VideoView video;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPref.edit();
+		editor.putInt(getString(R.string.shared_pref), 12);
+		editor.commit();
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		//Remove notification bar

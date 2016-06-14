@@ -11,5 +11,6 @@
     <string name="opponent_score">Player 2 : %1$d</string>
     <string name="title_activity_options2">Options2Activity</string>
     <string name="title_activity_help">HelpActivity</string>
+    <string name="shared_pref">com.example.boardg.sharedpref</string>
 
 </resources>

@@ -15,6 +15,7 @@ import android.widget.TextView;
 public class Options2Activity extends Activity {
 	private Button btnsPlayer;
 	private Button btnmPlayer;
+	private Button btnStats;
 	private Context mContext;
 	private TextView txtDifficulty;
 	private String[] difficulty= new String[]{"Easy","Medium","Difficult","Expert"};
@@ -29,6 +30,7 @@ public class Options2Activity extends Activity {
 		mContext = this;
 		btnsPlayer = (Button) findViewById(R.id.singlePlayer);
 		btnmPlayer = (Button) findViewById(R.id.multiPlayer);
+		btnStats = (Button) findViewById(R.id.score);
 		ImageView imgLeft = (ImageView) findViewById(R.id.lft_arrow);
 		ImageView imgRight = (ImageView) findViewById(R.id.rght_arrow);
 		txtDifficulty = (TextView) findViewById(R.id.txt_dificulty);
@@ -70,6 +72,15 @@ public class Options2Activity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(mContext, GameScreenActivity.class);
+				i.putExtra("single_player", false);
+				startActivity(i);
+			}
+		});
+		
+		btnStats.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(mContext, StatsActivity.class);
 				i.putExtra("single_player", false);
 				startActivity(i);
 			}

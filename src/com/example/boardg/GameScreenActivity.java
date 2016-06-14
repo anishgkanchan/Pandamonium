@@ -113,7 +113,7 @@ public class GameScreenActivity extends Activity {
 					for (int i = 0; i < list.size(); i++)
 						System.out.println(list.get(i).imageId);
 					adapter.notifyDataSetChanged();
-					movesPlayed--;
+					movesPlayed-=2;
 
 					Runnable r1 = new Runnable() {
 
