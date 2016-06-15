@@ -2,7 +2,6 @@ package com.example.boardg;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -10,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,7 +33,7 @@ public class GameScreenActivity extends Activity {
 	char playerState[][] = new char[][] { { '*', '*', '*', '*', '*' },
 			{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' },
 			{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' } };
-
+	SharedPreferences sharedPref;
 	char[][] oldPlayerState = new char[5][5];
 	int movesPlayed = 0; // can have a max value of 25, to identify end of game
 	int pScore[][] = new int[5][5];
@@ -53,6 +53,8 @@ public class GameScreenActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		sharedPref = this.getSharedPreferences("Shared Preference",
+				Context.MODE_PRIVATE);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		logic = new AlphaLogic();
 		singleplayer = getIntent().getBooleanExtra("single_player", true);
@@ -113,7 +115,7 @@ public class GameScreenActivity extends Activity {
 					for (int i = 0; i < list.size(); i++)
 						System.out.println(list.get(i).imageId);
 					adapter.notifyDataSetChanged();
-					movesPlayed-=2;
+					movesPlayed -= 2;
 
 					Runnable r1 = new Runnable() {
 
@@ -238,11 +240,103 @@ public class GameScreenActivity extends Activity {
 									adapter.notifyDataSetChanged();
 									playable = true;
 								} else {
+									boolean lost = logic
+											.getScore(pScore, playerState, 'X') > logic
+											.getScore(pScore, playerState, 'O');
+									int highScore = 0;
+									int currentStreak=0,maxStreak =0,totalGames = 0;
+									int newHighScore = logic.getScore(pScore,
+											playerState, 'O');
+									// Statistical Calculations
+									switch (difficulty) {
+									case 1:
+										highScore = sharedPref.getInt(getString(R.string.easy_high_score),0);
+										if (newHighScore > highScore) {
+											SharedPreferences.Editor editor = sharedPref.edit();
+											editor.putInt(getString(R.string.easy_high_score),newHighScore);
+											editor.commit();
+										}
+										if(!lost){
+											maxStreak = sharedPref.getInt(getString(R.string.Maxestreak), 0);
+											currentStreak = sharedPref.getInt(getString(R.string.estreak), 0)+1;
+											if(currentStreak>maxStreak){
+												SharedPreferences.Editor editor = sharedPref.edit();
+												editor.putInt(getString(R.string.Maxestreak),currentStreak);
+												editor.commit();
+											}
+										}
+										totalGames = sharedPref.getInt(getString(R.string.Teasy),0);
+										SharedPreferences.Editor editor = sharedPref.edit();
+										editor.putInt(getString(R.string.Teasy),totalGames+1);
+										editor.commit();
+										break;
+									case 2:highScore = sharedPref.getInt(getString(R.string.medium_high_score),0);
+										if (newHighScore > highScore) {
+											SharedPreferences.Editor editor1 = sharedPref.edit();
+											editor1.putInt(getString(R.string.medium_high_score),newHighScore);
+											editor1.commit();
+										}
+										if(!lost){
+											maxStreak = sharedPref.getInt(getString(R.string.Maxmstreak), 0);
+											currentStreak = sharedPref.getInt(getString(R.string.mstreak), 0)+1;
+											if(currentStreak>maxStreak){
+												SharedPreferences.Editor editor1 = sharedPref.edit();
+												editor1.putInt(getString(R.string.Maxmstreak),currentStreak);
+												editor1.commit();
+											}
+										}
+										totalGames = sharedPref.getInt(getString(R.string.Tmedium),0);
+										SharedPreferences.Editor editor1 = sharedPref.edit();
+										editor1.putInt(getString(R.string.Tmedium),totalGames+1);
+										editor1.commit();
+										break;
+									case 3:highScore = sharedPref.getInt(getString(R.string.difficult_high_score),0);
+										if (newHighScore > highScore) {
+											SharedPreferences.Editor editor2 = sharedPref.edit();
+											editor2.putInt(getString(R.string.difficult_high_score),newHighScore);
+											editor2.commit();
+										}
+										if(!lost){
+											maxStreak = sharedPref.getInt(getString(R.string.Maxdstreak), 0);
+											currentStreak = sharedPref.getInt(getString(R.string.dstreak), 0)+1;
+											if(currentStreak>maxStreak){
+												SharedPreferences.Editor editor2 = sharedPref.edit();
+												editor2.putInt(getString(R.string.Maxdstreak),currentStreak);
+												editor2.commit();
+											}
+										}
+										totalGames = sharedPref.getInt(getString(R.string.Tdifficult),0);
+										SharedPreferences.Editor editor2 = sharedPref.edit();
+										editor2.putInt(getString(R.string.Tdifficult),totalGames+1);
+										editor2.commit();
+										break;
+									case 4:highScore = sharedPref.getInt(getString(R.string.expert_high_score),0);
+										if (newHighScore > highScore) {
+											SharedPreferences.Editor editor3 = sharedPref.edit();
+											editor3.putInt(getString(R.string.expert_high_score),newHighScore);
+											editor3.commit();
+											if(!lost){
+												maxStreak = sharedPref.getInt(getString(R.string.Maxexstreak), 0);
+												currentStreak = sharedPref.getInt(getString(R.string.exstreak), 0)+1;
+												if(currentStreak>maxStreak){
+													SharedPreferences.Editor editor4= sharedPref.edit();
+													editor4.putInt(getString(R.string.Maxexstreak),currentStreak);
+													editor4.commit();
+		
+												}
+											}
+											totalGames = sharedPref.getInt(getString(R.string.Texpert),0);
+											SharedPreferences.Editor editor4 = sharedPref.edit();
+											editor4.putInt(getString(R.string.Texpert),totalGames+1);
+											editor4.commit();
+										}
+									break;
+									default:
+										break;
+									}
 
 									// set title
-									if (logic
-											.getScore(pScore, playerState, 'X') > logic
-											.getScore(pScore, playerState, 'O'))
+									if (lost)
 										alertDialogBuilder
 												.setTitle("Your Lost");
 									else
