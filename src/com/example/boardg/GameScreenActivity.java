@@ -2,7 +2,6 @@ package com.example.boardg;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -11,6 +10,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.graphics.drawable.AnimationDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -51,12 +52,16 @@ public class GameScreenActivity extends Activity {
 	List<Nishant> list;
 	List<Nishant> prevList;
 
+	Resources res; 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		logic = new AlphaLogic();
 		singleplayer = getIntent().getBooleanExtra("single_player", true);
 		difficulty = getIntent().getIntExtra("difficulty", 1);
+
+		res = getResources(); 
 
 		alertDialogBuilder = new AlertDialog.Builder(this);
 
@@ -95,7 +100,6 @@ public class GameScreenActivity extends Activity {
 		opponentScore = (TextView) findViewById(R.id.opponentScore);
 		undoImageView = (ImageView) findViewById(R.id.undo_button);
 		Resources res = getResources();
-
 		init();
 		undoImageView.setOnClickListener(new OnClickListener() {
 
@@ -191,97 +195,24 @@ public class GameScreenActivity extends Activity {
 						object.setScore(list.get(position).getScore());
 						list.set(position, object);
 						movesPlayed += 1;
-						final Handler h = new Handler();
 
-						final Runnable r2 = new Runnable() {
-
-							@Override
-							public void run() {
-								if (movesPlayed < 25) {
-									playerState = logic.CallAlpha(pScore,
-											playerState, difficulty, 'X',
-											-99999, 99999);
-									movesPlayed += 1;
-									System.out.println("Computer plays 1"
-											+ prevList.size() + list.size());
-									for (int i = 0; i < list.size(); i++) {
-										Log.e("Le", prevList.get(i).imageId
-												+ "");
-									}
-
-									for (int i = 0; i < 25; i++) {
-										int x = i / 5;
-										int y = i % 5;
-										if (playerState[x][y] == 'X')
-											list.get(i).setImage(
-													R.drawable.player2);
-									}
-									for (int i = 0; i < list.size(); i++) {
-										Log.e("Le23", prevList.get(i).imageId
-												+ "");
-									}
-									final String data = String.format(
-											getResources().getString(
-													R.string.opponent_score),
-											logic.getScore(pScore, playerState,
-													'X'));
-									final String text = String.format(
-											getResources().getString(
-													R.string.player_score),
-											logic.getScore(pScore, playerState,
-													'O'));
-									opponentScore.setText(data);
-									playerScore.setText(text);
-									for (int i = 0; i < list.size(); i++)
-										System.out.print("Computer plays"
-												+ prevList.get(i).imageId);
-									adapter.notifyDataSetChanged();
-									playable = true;
-								} else {
-
-									// set title
-									if (logic
-											.getScore(pScore, playerState, 'X') > logic
-											.getScore(pScore, playerState, 'O'))
-										alertDialogBuilder
-												.setTitle("Your Lost");
-									else
-										alertDialogBuilder
-												.setTitle("Your Won!");
-
-									// create alert dialog
-									AlertDialog alertDialog = alertDialogBuilder
-											.create();
-									alertDialog.show();
-								}
-							}
-						};
-
-						Runnable r1 = new Runnable() {
-
-							@Override
-							public void run() {
-								playable = false;
-								adapter.notifyDataSetChanged();
-								final String text = String.format(
-										getResources().getString(
-												R.string.player_score), logic
-												.getScore(pScore, playerState,
-														'O'));
-								final String data = String.format(
-										getResources().getString(
-												R.string.opponent_score), logic
-												.getScore(pScore, playerState,
-														'X'));
-
-								playerScore.setText(text);
-								opponentScore.setText(data);
-								h.postDelayed(r2, 1500); // 10 second delay
-							}
-						};
-
-						h.postDelayed(r1, 0);
-
+						playable = false;
+						adapter.notifyDataSetChanged();						
+						final String text = String.format(
+								getResources().getString(
+										R.string.player_score), logic
+										.getScore(pScore, playerState,
+												'O'));
+						final String data = String.format(
+								getResources().getString(
+										R.string.opponent_score), logic
+										.getScore(pScore, playerState,
+												'X'));
+						playerScore.setText(text);
+						opponentScore.setText(data);						
+						
+						new Task2().execute();
+					   
 					}
 				} else {
 					char player;
@@ -348,6 +279,7 @@ public class GameScreenActivity extends Activity {
 			}
 		});
 		gridView.setAdapter(adapter);
+		
 	}
 
 	void copyStuff(List<Nishant> dest, List<Nishant> source) {
@@ -427,22 +359,22 @@ public class GameScreenActivity extends Activity {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View row = convertView;
-			ViewHolder holder = null;
+			ViewHolder temp = null;
 
 			if (row == null) {
 				LayoutInflater inflater = ((Activity) context)
 						.getLayoutInflater();
 				row = inflater.inflate(layoutResourceId, parent, false);
-				holder = new ViewHolder();
-				holder.imageTitle = (TextView) row
+				temp = new ViewHolder();
+				temp.imageTitle = (TextView) row
 						.findViewById(R.id.tile_score);
-				holder.image = (ImageView) row.findViewById(R.id.player_icon);
+				temp.image = (ImageView) row.findViewById(R.id.player_icon);
 
-				row.setTag(holder);
+				row.setTag(temp);
 			} else {
-				holder = (ViewHolder) row.getTag();
+				temp = (ViewHolder) row.getTag();
 			}
-
+			final ViewHolder holder = temp;
 			Nishant item = mList.get(position);
 			if (position % 2 == 0)
 				row.setBackgroundColor(getResources().getColor(
@@ -451,8 +383,44 @@ public class GameScreenActivity extends Activity {
 				row.setBackgroundColor(getResources().getColor(
 						R.color.dark_brown));
 			holder.imageTitle.setText(item.getScore() + "");
-			holder.image.setBackgroundResource(item.getImage());
-			holder.image.setImageResource(item.getImage());
+			final AnimationDrawable nicePandaDrawable = (AnimationDrawable)res.getDrawable(R.anim.anim_android);
+			final AnimationDrawable evilPandaDrawable = (AnimationDrawable)res.getDrawable(R.anim.anim_android_evil);
+
+			if (item.getImage()==R.drawable.player1){
+				runOnUiThread(new Thread(new Runnable() {
+					 public void run() {
+						holder.image.setImageDrawable(nicePandaDrawable);
+						holder.image.post(
+								new Runnable(){
+	
+								  @Override
+								  public void run() {
+									  nicePandaDrawable.start();
+								  }
+								});
+						 }
+					 }));
+				
+				
+			}
+			else if (item.getImage()==R.drawable.player2){
+				runOnUiThread(new Thread(new Runnable() {
+					 public void run() {
+						holder.image.setImageDrawable(evilPandaDrawable);
+						holder.image.post(
+								new Runnable(){
+
+								  @Override
+								  public void run() {
+									  evilPandaDrawable.start();
+								  }
+								});
+						 }
+					 }));
+			}
+			else {
+				holder.image.setImageDrawable(null);
+			}
 			return row;
 		}
 	}
@@ -486,5 +454,89 @@ public class GameScreenActivity extends Activity {
 		}
 
 	}
+		// The definition of our task class
+	   private class Task2 extends AsyncTask<String, Integer, Void> {
+		   @Override
+		   protected void onPreExecute() {
+		      super.onPreExecute();
+		   }
+		 
+		   @Override
+		   protected Void doInBackground(String... params) {
+				if (movesPlayed < 25) {
+					playerState = logic.CallAlpha(pScore,
+							playerState, difficulty, 'X',
+							-99999, 99999);
+					movesPlayed += 1;
+					System.out.println("Computer plays 1"
+							+ prevList.size() + list.size());
+					for (int i = 0; i < list.size(); i++) {
+						Log.e("Le", prevList.get(i).imageId
+								+ "");
+					}
 
+					for (int i = 0; i < 25; i++) {
+						int x = i / 5;
+						int y = i % 5;
+						if (playerState[x][y] == 'X')
+							list.get(i).setImage(
+									R.drawable.player2);
+					}
+					for (int i = 0; i < list.size(); i++) {
+						Log.e("Le23", prevList.get(i).imageId
+								+ "");
+					}
+					final String data = String.format(
+							getResources().getString(
+									R.string.opponent_score),
+							logic.getScore(pScore, playerState,
+									'X'));
+					final String text = String.format(
+							getResources().getString(
+									R.string.player_score),
+							logic.getScore(pScore, playerState,
+									'O'));
+					runOnUiThread(new Runnable() {
+						
+						@Override
+						public void run() {
+							opponentScore.setText(data);
+							playerScore.setText(text);			
+							adapter.notifyDataSetChanged();			
+						}
+					});
+					
+					playable = true;
+				} else {
+
+					
+					if (logic
+							.getScore(pScore, playerState, 'X') > logic
+							.getScore(pScore, playerState, 'O'))
+						alertDialogBuilder
+								.setTitle("Your Lost");
+					else
+						alertDialogBuilder
+								.setTitle("Your Won!");
+
+					// create alert dialog
+					runOnUiThread(new Runnable() {
+						
+						@Override
+						public void run() {
+							alertDialogBuilder
+							.create().show();
+						}
+					});
+				}
+				return null;
+		   }
+		 
+		   @Override
+		   protected void onProgressUpdate(Integer... values) {
+		      super.onProgressUpdate(values);
+		   }
+		 
+		   
+	   }
 }
