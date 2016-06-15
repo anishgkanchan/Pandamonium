@@ -1,7 +1,6 @@
 package com.example.boardg;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -15,7 +14,6 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -47,6 +45,8 @@ public class GameScreenActivity extends Activity {
 	boolean player1 = true;
 	TextView playerScore;
 	ImageView undoImageView;
+	ImageView imgAnimTop;
+	ImageView imgAnimBottom;
 	TextView opponentScore;
 	GridViewAdapter adapter;
 	AlertDialog.Builder alertDialogBuilder;
@@ -88,6 +88,7 @@ public class GameScreenActivity extends Activity {
 						GameScreenActivity.this.finish();
 					}
 				});
+
 		// Remove notification bar
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -97,7 +98,9 @@ public class GameScreenActivity extends Activity {
 		playerScore = (TextView) findViewById(R.id.playerScore);
 		opponentScore = (TextView) findViewById(R.id.opponentScore);
 		undoImageView = (ImageView) findViewById(R.id.undo_button);
-		Resources res = getResources();
+		imgAnimTop = (ImageView) findViewById(R.id.bg_anim_top);
+		imgAnimBottom = (ImageView) findViewById(R.id.bg_anim_bottom);
+		//Resources res = getResources();
 		init();
 		undoImageView.setOnClickListener(new OnClickListener() {
 
@@ -108,12 +111,9 @@ public class GameScreenActivity extends Activity {
 						for (int j = 0; j < 5; j++) {
 							playerState[i][j] = oldPlayerState[i][j];
 						}
-						System.out.println(Arrays.toString(playerState[i]));
 					}
 
 					copyStuff(list, prevList);
-					for (int i = 0; i < list.size(); i++)
-						System.out.println(list.get(i).imageId);
 					adapter.notifyDataSetChanged();
 					movesPlayed -= 2;
 
@@ -150,8 +150,6 @@ public class GameScreenActivity extends Activity {
 							}
 						}
 						copyStuff(prevList, list);
-						for (int i = 0; i < list.size(); i++)
-							System.out.println(prevList.get(i).imageId);
 
 						Nishant object = new Nishant();
 						object.setImage(R.drawable.player1);
@@ -160,17 +158,8 @@ public class GameScreenActivity extends Activity {
 							int x = position / 5;
 							int y = position % 5;
 							char[][] templayer = playerState.clone();
-							for (int i = 0; i < playerState.length; i++) {
-								System.out.println(Arrays
-										.toString(playerState[i]));
-							}
 							playerState = logic.raid(position / 5,
 									position % 5, 'O', playerState, templayer);
-							System.out.println("after raid");
-							for (int i = 0; i < playerState.length; i++) {
-								System.out.println(Arrays
-										.toString(playerState[i]));
-							}
 							if (x - 1 >= 0
 									&& playerState[position / 5 - 1][position % 5] == 'O')
 								list.get((x - 1) * 5 + y).setImage(
@@ -188,7 +177,6 @@ public class GameScreenActivity extends Activity {
 								list.get(x * 5 + y + 1).setImage(
 										R.drawable.player1);
 						}
-						System.out.println("Was not a raid");
 						playerState[position / 5][position % 5] = 'O';
 						object.setScore(list.get(position).getScore());
 						list.set(position, object);
@@ -205,10 +193,7 @@ public class GameScreenActivity extends Activity {
 									movesPlayed += 1;
 									System.out.println("Computer plays 1"
 											+ prevList.size() + list.size());
-									for (int i = 0; i < list.size(); i++) {
-										Log.e("Le", prevList.get(i).imageId
-												+ "");
-									}
+									
 
 									for (int i = 0; i < 25; i++) {
 										int x = i / 5;
@@ -217,10 +202,7 @@ public class GameScreenActivity extends Activity {
 											list.get(i).setImage(
 													R.drawable.player2);
 									}
-									for (int i = 0; i < list.size(); i++) {
-										Log.e("Le23", prevList.get(i).imageId
-												+ "");
-									}
+									
 									final String data = String.format(
 											getResources().getString(
 													R.string.opponent_score),
@@ -387,8 +369,12 @@ public class GameScreenActivity extends Activity {
 												'X'));
 						playerScore.setText(text);
 						opponentScore.setText(data);						
-						
-						new Task2().execute();
+						new Handler().postDelayed(new Runnable() {
+						    @Override
+						    public void run() {
+								new Task2().execute();
+						    }
+						}, 3000);
 					   
 					}
 				} else {
@@ -411,18 +397,9 @@ public class GameScreenActivity extends Activity {
 							int x = position / 5;
 							int y = position % 5;
 							char[][] templayer = playerState.clone();
-							for (int i = 0; i < playerState.length; i++) {
-								System.out.println(Arrays
-										.toString(playerState[i]));
-							}
 							playerState = logic.raid(position / 5,
 									position % 5, player, playerState,
 									templayer);
-							System.out.println("after raid");
-							for (int i = 0; i < playerState.length; i++) {
-								System.out.println(Arrays
-										.toString(playerState[i]));
-							}
 							if (x - 1 >= 0
 									&& playerState[position / 5 - 1][position % 5] == player)
 								list.get((x - 1) * 5 + y).setImage(playerImage);
@@ -436,7 +413,6 @@ public class GameScreenActivity extends Activity {
 									&& playerState[position / 5][position % 5 + 1] == player)
 								list.get(x * 5 + y + 1).setImage(playerImage);
 						}
-						System.out.println("Was not a raid");
 						playerState[position / 5][position % 5] = player;
 						object.setScore(list.get(position).getScore());
 						list.set(position, object);
@@ -466,6 +442,27 @@ public class GameScreenActivity extends Activity {
 	}
 
 	void init() {
+		final AnimationDrawable bgDrawableTop = (AnimationDrawable)res.getDrawable(R.anim.bg_anim_top);
+		imgAnimTop.setImageDrawable(bgDrawableTop);
+		imgAnimTop.post(
+				new Runnable(){
+
+				  @Override
+				  public void run() {
+					  bgDrawableTop.start();
+				  }
+				});
+		final AnimationDrawable bgDrawableBottom = (AnimationDrawable)res.getDrawable(R.anim.bg_anim_bottom);
+		imgAnimBottom.setImageDrawable(bgDrawableBottom);
+		imgAnimBottom.post(
+				new Runnable(){
+
+				  @Override
+				  public void run() {
+					  bgDrawableBottom.start();
+				  }
+				});
+		
 		list = new ArrayList<Nishant>();
 		prevList = new ArrayList<Nishant>();
 		Resources res = getResources();
@@ -644,12 +641,6 @@ public class GameScreenActivity extends Activity {
 							playerState, difficulty, 'X',
 							-99999, 99999);
 					movesPlayed += 1;
-					System.out.println("Computer plays 1"
-							+ prevList.size() + list.size());
-					for (int i = 0; i < list.size(); i++) {
-						Log.e("Le", prevList.get(i).imageId
-								+ "");
-					}
 
 					for (int i = 0; i < 25; i++) {
 						int x = i / 5;
@@ -657,10 +648,6 @@ public class GameScreenActivity extends Activity {
 						if (playerState[x][y] == 'X')
 							list.get(i).setImage(
 									R.drawable.player2);
-					}
-					for (int i = 0; i < list.size(); i++) {
-						Log.e("Le23", prevList.get(i).imageId
-								+ "");
 					}
 					final String data = String.format(
 							getResources().getString(
@@ -803,6 +790,5 @@ public class GameScreenActivity extends Activity {
 		      super.onProgressUpdate(values);
 		   }
 		 
-		   
 	   }
 }
