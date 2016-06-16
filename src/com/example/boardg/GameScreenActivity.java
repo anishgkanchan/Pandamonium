@@ -1,6 +1,7 @@
 package com.example.boardg;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -14,6 +15,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,6 +28,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.logic.AlphaLogic;
 
@@ -106,12 +109,17 @@ public class GameScreenActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
+				boolean same  = true;
 				if (playable) {
 					for (int i = 0; i < 5; i++) {
 						for (int j = 0; j < 5; j++) {
+							if(playerState[i][j] != oldPlayerState[i][j])
+								same = false;
 							playerState[i][j] = oldPlayerState[i][j];
 						}
 					}
+					if(same)
+						Toast.makeText(GameScreenActivity.this, "You can only undo 1 move at a time.", Toast.LENGTH_SHORT).show();
 
 					copyStuff(list, prevList);
 					adapter.notifyDataSetChanged();
