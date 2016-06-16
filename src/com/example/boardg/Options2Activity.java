@@ -31,17 +31,21 @@ public class Options2Activity extends Activity {
 		btnsPlayer = (Button) findViewById(R.id.singlePlayer);
 		btnmPlayer = (Button) findViewById(R.id.multiPlayer);
 		btnStats = (Button) findViewById(R.id.score);
-		ImageView imgLeft = (ImageView) findViewById(R.id.lft_arrow);
-		ImageView imgRight = (ImageView) findViewById(R.id.rght_arrow);
+		final ImageView imgLeft = (ImageView) findViewById(R.id.lft_arrow);
+		final ImageView imgRight = (ImageView) findViewById(R.id.rght_arrow);
 		txtDifficulty = (TextView) findViewById(R.id.txt_dificulty);
 				
 		imgLeft.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				imgRight.setVisibility(View.VISIBLE);
 				if(count>0){
 					count--;
 					txtDifficulty.setText(difficulty[count]);
+				}
+				if(count==0){
+					imgLeft.setVisibility(View.INVISIBLE);
 				}
 				
 			}
@@ -51,9 +55,13 @@ public class Options2Activity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				imgLeft.setVisibility(View.VISIBLE);
 				if(count<3){
 					count++;
 					txtDifficulty.setText(difficulty[count]);
+				}
+				if(count==3){
+					imgRight.setVisibility(View.INVISIBLE);
 				}
 				
 			}
