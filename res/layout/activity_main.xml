@@ -15,13 +15,16 @@
         android:layout_gravity="center_horizontal"
         android:src="@drawable/title"/>
     
-    <VideoView
-        android:id="@+id/video_h"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center_horizontal"
+    <ImageView 
+        android:id="@+id/img_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:layout_marginBottom="30dp"
-        />
+        android:layout_gravity="center_horizontal"
+        android:src="@anim/start_screen_video"/>
+    
+    
     
     <Button 
         android:id="@+id/btn_how2play"

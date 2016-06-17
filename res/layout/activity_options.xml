@@ -6,6 +6,7 @@
     android:orientation="vertical"
     tools:context="com.example.boardg.OptionsActivity">
 
+    
     <Button
         android:id="@+id/singleplayer"
         android:layout_width="match_parent"

@@ -1,6 +1,7 @@
 <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/back_skin"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.boardg.HelpActivity"> 
@@ -9,17 +10,25 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+    
+    <ImageView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/title"/>
+    
    <TextView
        android:padding="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:text="A war has broken down in the kingdom of the Pandas 
-and you have agreed to help them defeat their evil 
-brethren and settle the pand a monium!"/>
+        android:text="A war has broken down in the kingdom of the Pandas and you have agreed to help them defeat their evil brethren and settle the pand-a-monium!"/>
 <TextView
        android:padding="15dp"
         android:textSize="25sp"
+        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Rules"></TextView>
@@ -28,17 +37,13 @@ brethren and settle the pand a monium!"/>
         android:textSize="20sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="In this battle, each player takes turns to capture 
-territories of the kingdom with maximum total points. "></TextView>
+        android:text="In this battle, each player takes turns to capture territories of the kingdom with maximum total points. "></TextView>
 <TextView
        android:padding="15dp"
         android:textSize="20sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="
-The kingdom consists of a 5 by 5 grid with a fixed point
-associated with eah territory based on its importance 
-to the pandas."></TextView>
+        android:text="The kingdom consists of a 5 by 5 grid with a fixed point associated with eah territory based on its importance to the pandas."></TextView>
 <TextView
        android:padding="15dp"
         android:textSize="20sp"
@@ -50,42 +55,60 @@ to the pandas."></TextView>
         android:textSize="20sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="During one’s turn, a player can make one of 
-the 2 moves:
+        android:text="During one’s turn, a player can make one of the 2 moves:
 
-Raid – You can take over any unoccupied territory that 
-is adjacent to one of your captured territory (horizontally
-or vertically, but not diagonally). You place your panda in
-the taken over tile. Also, any enemy panda(s) adjacent to 
-your new panda (horizontally or vertically, but not 
-diagonally) are conquered and replaced by your own 
-pandas."/>
+Raid – You can take over any unoccupied territory that is adjacent to one of your captured territory (horizontally or vertically, but not diagonally). You place your panda in the taken over tile. Also, any enemy panda(s) adjacent to your new panda (horizontally or vertically, but not diagonally) are conquered and replaced by your own pandas."/>
 
 <ImageView 
     android:padding="15dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:src="@drawable/raidexample">
+    android:src="@drawable/raidexample1">
     
-</ImageView>"
-
+</ImageView>
+<ImageView 
+    android:padding="15dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+   android:layout_gravity="center_horizontal"
+    android:src="@drawable/raidexample3">
+    
+</ImageView>
+<ImageView 
+    android:padding="15dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/raidexample2">
+    
+</ImageView>
 <TextView
     android:layout_height="wrap_content"
         android:textSize="20sp"
     android:layout_width="match_parent"
     android:padding="15dp"
-    android:text="Sneak ​– You can take any unoccupied tile on the board 
-that is not next to your existing pandas. This will create 
-your new panda on the board."/>
+    android:text="Sneak ​– You can take any unoccupied tile on the board that is not next to your existing pandas. This will create your new panda on the board."/>
 
 <ImageView 
     android:padding="15dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:src="@drawable/sneakexample">
+    android:src="@drawable/sneakexample1">
     
 </ImageView>
-
+<ImageView 
+    android:padding="15dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:src="@drawable/sneakexample3">
+    
+</ImageView><ImageView 
+    android:padding="15dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/sneakexample2">
+    
+</ImageView>
 
 </LinearLayout>
 
