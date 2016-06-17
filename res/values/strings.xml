@@ -29,4 +29,8 @@
 	<string name="Tmedium">Total Medium</string>
 	<string name="Tdifficult">Total Difficult</string>
 	<string name="Texpert">Total Expert</string>
+	<string name="eWins">Easy Wins</string>
+	<string name="mWins">Medium Wins</string>
+	<string name="dWins">Difficult Wins</string>
+	<string name="exWins">Expert Wins</string>
 </resources>

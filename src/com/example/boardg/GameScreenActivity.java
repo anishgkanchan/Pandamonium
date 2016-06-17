@@ -485,6 +485,7 @@ public class GameScreenActivity extends Activity {
 				} else {			boolean lost = logic.getScore(pScore, playerState, 'X') > logic.getScore(pScore, playerState, 'O');
 									int highScore = 0;
 									int currentStreak=0,maxStreak =0,totalGames = 0;
+									int wins=0;
 									int newHighScore = logic.getScore(pScore,
 											playerState, 'O');
 									// Statistical Calculations
@@ -498,12 +499,19 @@ public class GameScreenActivity extends Activity {
 										}
 										if(!lost){
 											maxStreak = sharedPref.getInt(getString(R.string.Maxestreak), 0);
-											currentStreak = sharedPref.getInt(getString(R.string.estreak), 0)+1;
+											currentStreak = sharedPref.getInt(getString(R.string.estreak), 0);
+											currentStreak++;
 											if(currentStreak>maxStreak){
 												SharedPreferences.Editor editor = sharedPref.edit();
 												editor.putInt(getString(R.string.Maxestreak),currentStreak);
+												editor.putInt(getString(R.string.estreak),currentStreak);
 												editor.commit();
 											}
+											Log.e("output",currentStreak+" "+maxStreak);
+											wins = sharedPref.getInt(getString(R.string.eWins), 0);
+											SharedPreferences.Editor editor = sharedPref.edit();
+											editor.putInt(getString(R.string.eWins),wins+1);
+											editor.commit();
 										}
 										totalGames = sharedPref.getInt(getString(R.string.Teasy),0);
 										SharedPreferences.Editor editor = sharedPref.edit();
@@ -522,8 +530,13 @@ public class GameScreenActivity extends Activity {
 											if(currentStreak>maxStreak){
 												SharedPreferences.Editor editor1 = sharedPref.edit();
 												editor1.putInt(getString(R.string.Maxmstreak),currentStreak);
+												editor1.putInt(getString(R.string.mstreak),currentStreak);
 												editor1.commit();
 											}
+											wins = sharedPref.getInt(getString(R.string.mWins), 0);
+											SharedPreferences.Editor editor1 = sharedPref.edit();
+											editor1.putInt(getString(R.string.mWins),wins+1);
+											editor1.commit();
 										}
 										totalGames = sharedPref.getInt(getString(R.string.Tmedium),0);
 										SharedPreferences.Editor editor1 = sharedPref.edit();
@@ -542,8 +555,13 @@ public class GameScreenActivity extends Activity {
 											if(currentStreak>maxStreak){
 												SharedPreferences.Editor editor2 = sharedPref.edit();
 												editor2.putInt(getString(R.string.Maxdstreak),currentStreak);
+												editor2.putInt(getString(R.string.dstreak),currentStreak);
 												editor2.commit();
 											}
+											wins = sharedPref.getInt(getString(R.string.dWins), 0);
+											SharedPreferences.Editor editor2 = sharedPref.edit();
+											editor2.putInt(getString(R.string.dWins),wins+1);
+											editor2.commit();
 										}
 										totalGames = sharedPref.getInt(getString(R.string.Tdifficult),0);
 										SharedPreferences.Editor editor2 = sharedPref.edit();
@@ -561,9 +579,14 @@ public class GameScreenActivity extends Activity {
 												if(currentStreak>maxStreak){
 													SharedPreferences.Editor editor4= sharedPref.edit();
 													editor4.putInt(getString(R.string.Maxexstreak),currentStreak);
+													editor4.putInt(getString(R.string.exstreak),currentStreak);
 													editor4.commit();
 		
 												}
+												wins = sharedPref.getInt(getString(R.string.exWins), 0);
+												SharedPreferences.Editor editor4 = sharedPref.edit();
+												editor4.putInt(getString(R.string.exWins),wins+1);
+												editor4.commit();
 											}
 											totalGames = sharedPref.getInt(getString(R.string.Texpert),0);
 											SharedPreferences.Editor editor4 = sharedPref.edit();
