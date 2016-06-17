@@ -8,7 +8,6 @@ import java.util.Random;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.AnimationDrawable;
@@ -25,6 +24,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.example.logic.AlphaLogic;
 
 public class GameScreenActivity extends Activity {
+
 	char playerState[][] = new char[][] { { '*', '*', '*', '*', '*' },
 			{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' },
 			{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' } };
@@ -48,6 +49,7 @@ public class GameScreenActivity extends Activity {
 	boolean player1 = true;
 	TextView playerScore;
 	ImageView undoImageView;
+	AlertDialog dialog;
 	ImageView imgAnimTop;
 	ImageView imgAnimBottom;
 	TextView opponentScore;
@@ -73,24 +75,7 @@ public class GameScreenActivity extends Activity {
 
 		// set dialog message
 		alertDialogBuilder
-				.setMessage("Play Again?")
-				.setCancelable(false)
-				.setPositiveButton("Yes",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								// if this button is clicked, just close
-								// the dialog box and refresh the board
-								init();
-								adapter.notifyDataSetChanged();
-							}
-						})
-				.setNegativeButton("No", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						// if this button is clicked, close
-						// current activity
-						GameScreenActivity.this.finish();
-					}
-				});
+				.setCancelable(false);
 
 		// Remove notification bar
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -149,9 +134,23 @@ public class GameScreenActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				if (singleplayer) {
-
+					imgAnimTop.post(
+							new Runnable(){
+							  @Override
+							  public void run() {
+								  ((AnimationDrawable)imgAnimTop.getDrawable()).stop();
+							  }
+							});
+					imgAnimBottom.post(
+							new Runnable(){
+							  @Override
+							  public void run() {
+								  ((AnimationDrawable)imgAnimBottom.getDrawable()).start();
+							  }
+							});
 					if (list.get(position).getImage() == 0 && playable
 							&& movesPlayed < 25) {
+						
 						for (int i = 0; i < 5; i++) {
 							for (int j = 0; j < 5; j++) {
 								oldPlayerState[i][j] = playerState[i][j];
@@ -189,178 +188,6 @@ public class GameScreenActivity extends Activity {
 						object.setScore(list.get(position).getScore());
 						list.set(position, object);
 						movesPlayed += 1;
-
-						final Runnable r2 = new Runnable() {
-
-							@Override
-							public void run() {
-								if (movesPlayed < 25) {
-									playerState = logic.CallAlpha(pScore,
-											playerState, difficulty, 'X',
-											-99999, 99999);
-									movesPlayed += 1;
-									System.out.println("Computer plays 1"
-											+ prevList.size() + list.size());
-									
-
-									for (int i = 0; i < 25; i++) {
-										int x = i / 5;
-										int y = i % 5;
-										if (playerState[x][y] == 'X')
-											list.get(i).setImage(
-													R.drawable.player2);
-									}
-									
-									final String data = String.format(
-											getResources().getString(
-													R.string.opponent_score),
-											logic.getScore(pScore, playerState,
-													'X'));
-									final String text = String.format(
-											getResources().getString(
-													R.string.player_score),
-											logic.getScore(pScore, playerState,
-													'O'));
-									opponentScore.setText(data);
-									playerScore.setText(text);
-									for (int i = 0; i < list.size(); i++)
-										System.out.print("Computer plays"
-												+ prevList.get(i).imageId);
-									adapter.notifyDataSetChanged();
-									playable = true;
-								} else {
-									boolean lost = logic
-											.getScore(pScore, playerState, 'X') > logic
-											.getScore(pScore, playerState, 'O');
-									int highScore = 0;
-									int currentStreak=0,maxStreak =0,totalGames = 0;
-									int newHighScore = logic.getScore(pScore,
-											playerState, 'O');
-									// Statistical Calculations
-									switch (difficulty) {
-									case 1:
-										highScore = sharedPref.getInt(getString(R.string.easy_high_score),0);
-										if (newHighScore > highScore) {
-											SharedPreferences.Editor editor = sharedPref.edit();
-											editor.putInt(getString(R.string.easy_high_score),newHighScore);
-											editor.commit();
-										}
-										if(!lost){
-											maxStreak = sharedPref.getInt(getString(R.string.Maxestreak), 0);
-											currentStreak = sharedPref.getInt(getString(R.string.estreak), 0)+1;
-											if(currentStreak>maxStreak){
-												SharedPreferences.Editor editor = sharedPref.edit();
-												editor.putInt(getString(R.string.Maxestreak),currentStreak);
-												editor.commit();
-											}
-										}
-										totalGames = sharedPref.getInt(getString(R.string.Teasy),0);
-										SharedPreferences.Editor editor = sharedPref.edit();
-										editor.putInt(getString(R.string.Teasy),totalGames+1);
-										editor.commit();
-										break;
-									case 2:highScore = sharedPref.getInt(getString(R.string.medium_high_score),0);
-										if (newHighScore > highScore) {
-											SharedPreferences.Editor editor1 = sharedPref.edit();
-											editor1.putInt(getString(R.string.medium_high_score),newHighScore);
-											editor1.commit();
-										}
-										if(!lost){
-											maxStreak = sharedPref.getInt(getString(R.string.Maxmstreak), 0);
-											currentStreak = sharedPref.getInt(getString(R.string.mstreak), 0)+1;
-											if(currentStreak>maxStreak){
-												SharedPreferences.Editor editor1 = sharedPref.edit();
-												editor1.putInt(getString(R.string.Maxmstreak),currentStreak);
-												editor1.commit();
-											}
-										}
-										totalGames = sharedPref.getInt(getString(R.string.Tmedium),0);
-										SharedPreferences.Editor editor1 = sharedPref.edit();
-										editor1.putInt(getString(R.string.Tmedium),totalGames+1);
-										editor1.commit();
-										break;
-									case 3:highScore = sharedPref.getInt(getString(R.string.difficult_high_score),0);
-										if (newHighScore > highScore) {
-											SharedPreferences.Editor editor2 = sharedPref.edit();
-											editor2.putInt(getString(R.string.difficult_high_score),newHighScore);
-											editor2.commit();
-										}
-										if(!lost){
-											maxStreak = sharedPref.getInt(getString(R.string.Maxdstreak), 0);
-											currentStreak = sharedPref.getInt(getString(R.string.dstreak), 0)+1;
-											if(currentStreak>maxStreak){
-												SharedPreferences.Editor editor2 = sharedPref.edit();
-												editor2.putInt(getString(R.string.Maxdstreak),currentStreak);
-												editor2.commit();
-											}
-										}
-										totalGames = sharedPref.getInt(getString(R.string.Tdifficult),0);
-										SharedPreferences.Editor editor2 = sharedPref.edit();
-										editor2.putInt(getString(R.string.Tdifficult),totalGames+1);
-										editor2.commit();
-										break;
-									case 4:highScore = sharedPref.getInt(getString(R.string.expert_high_score),0);
-										if (newHighScore > highScore) {
-											SharedPreferences.Editor editor3 = sharedPref.edit();
-											editor3.putInt(getString(R.string.expert_high_score),newHighScore);
-											editor3.commit();
-											if(!lost){
-												maxStreak = sharedPref.getInt(getString(R.string.Maxexstreak), 0);
-												currentStreak = sharedPref.getInt(getString(R.string.exstreak), 0)+1;
-												if(currentStreak>maxStreak){
-													SharedPreferences.Editor editor4= sharedPref.edit();
-													editor4.putInt(getString(R.string.Maxexstreak),currentStreak);
-													editor4.commit();
-		
-												}
-											}
-											totalGames = sharedPref.getInt(getString(R.string.Texpert),0);
-											SharedPreferences.Editor editor4 = sharedPref.edit();
-											editor4.putInt(getString(R.string.Texpert),totalGames+1);
-											editor4.commit();
-										}
-									break;
-									default:
-										break;
-									}
-
-									// set title
-									if (lost)
-										alertDialogBuilder
-												.setTitle("Your Lost");
-									else
-										alertDialogBuilder
-												.setTitle("Your Won!");
-
-									// create alert dialog
-									AlertDialog alertDialog = alertDialogBuilder
-											.create();
-									alertDialog.show();
-								}
-							}
-						};
-
-						Runnable r1 = new Runnable() {
-
-							@Override
-							public void run() {
-								playable = false;
-								adapter.notifyDataSetChanged();
-								final String text = String.format(
-										getResources().getString(
-												R.string.player_score), logic
-												.getScore(pScore, playerState,
-														'O'));
-								final String data = String.format(
-										getResources().getString(
-												R.string.opponent_score), logic
-												.getScore(pScore, playerState,
-														'X'));
-
-								playerScore.setText(text);
-								opponentScore.setText(data);
-							}
-						};
 
 
 						playable = false;
@@ -450,26 +277,17 @@ public class GameScreenActivity extends Activity {
 	}
 
 	void init() {
-		final AnimationDrawable bgDrawableTop = (AnimationDrawable)res.getDrawable(R.anim.bg_anim_top);
-		imgAnimTop.setImageDrawable(bgDrawableTop);
+		imgAnimTop.setImageDrawable((AnimationDrawable)getResources().getDrawable(R.anim.bg_anim_top));
 		imgAnimTop.post(
 				new Runnable(){
 
 				  @Override
 				  public void run() {
-					  bgDrawableTop.start();
+					  ((AnimationDrawable)imgAnimTop.getDrawable()).start();
 				  }
 				});
-		final AnimationDrawable bgDrawableBottom = (AnimationDrawable)res.getDrawable(R.anim.bg_anim_bottom);
-		imgAnimBottom.setImageDrawable(bgDrawableBottom);
-		imgAnimBottom.post(
-				new Runnable(){
-
-				  @Override
-				  public void run() {
-					  bgDrawableBottom.start();
-				  }
-				});
+		imgAnimBottom.setImageDrawable((AnimationDrawable)getResources().getDrawable(R.anim.bg_anim_bottom)
+		);
 		
 		list = new ArrayList<Nishant>();
 		prevList = new ArrayList<Nishant>();
@@ -571,14 +389,7 @@ public class GameScreenActivity extends Activity {
 				runOnUiThread(new Thread(new Runnable() {
 					 public void run() {
 						holder.image.setImageDrawable(nicePandaDrawable);
-						holder.image.post(
-								new Runnable(){
-	
-								  @Override
-								  public void run() {
-									  nicePandaDrawable.start();
-								  }
-								});
+						nicePandaDrawable.start();
 						 }
 					 }));
 				
@@ -588,14 +399,7 @@ public class GameScreenActivity extends Activity {
 				runOnUiThread(new Thread(new Runnable() {
 					 public void run() {
 						holder.image.setImageDrawable(evilPandaDrawable);
-						holder.image.post(
-								new Runnable(){
-
-								  @Override
-								  public void run() {
-									  evilPandaDrawable.start();
-								  }
-								});
+						evilPandaDrawable.start();
 						 }
 					 }));
 			}
@@ -770,23 +574,53 @@ public class GameScreenActivity extends Activity {
 									default:
 										break;
 									}
-					
+					View v = View.inflate(GameScreenActivity.this, R.layout.dialog, null);
+					TextView title = (TextView)v.findViewById(R.id.title);
+					TextView message = (TextView)v.findViewById(R.id.message);
+					Button btnYes = (Button)v.findViewById(R.id.btn_yes);
+					Button btnNo = (Button)v.findViewById(R.id.btn_no);
+					btnNo.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View arg0) {
+							dialog.dismiss();
+							GameScreenActivity.this.finish();							
+						}
+					});
+					btnYes.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View arg0) {
+							dialog.dismiss();
+							init();
+							adapter.notifyDataSetChanged();
+						}
+					});
 					if (logic
 							.getScore(pScore, playerState, 'X') > logic
 							.getScore(pScore, playerState, 'O'))
-						alertDialogBuilder
-								.setTitle("Your Lost");
-					else
-						alertDialogBuilder
-								.setTitle("Your Won!");
-
+					{
+						v.setBackgroundResource(R.drawable.defeat_panda);
+						title.setText("You Lost");
+						message.setText("Play Again?");
+						alertDialogBuilder.setView(null).setView(v);
+					//alertDialogBuilder.set
+					}
+					else{
+						v.setBackgroundResource(R.drawable.victory_panda);
+						title.setText("You Won");
+						message.setText("Play Again?");
+						alertDialogBuilder.setView(v);
+					}
 					// create alert dialog
 					runOnUiThread(new Runnable() {
 						
 						@Override
 						public void run() {
-							alertDialogBuilder
-							.create().show();
+							dialog = alertDialogBuilder
+							.create();
+							dialog.show();
+							
 						}
 					});
 				}
@@ -796,6 +630,24 @@ public class GameScreenActivity extends Activity {
 		   @Override
 		   protected void onProgressUpdate(Integer... values) {
 		      super.onProgressUpdate(values);
+		   }
+		   @Override
+		   protected void onPostExecute(Void values){
+				imgAnimBottom.post(new Runnable() {
+					
+					@Override
+					public void run() {
+						((AnimationDrawable)imgAnimBottom.getDrawable()).stop();
+					}
+				});
+				imgAnimTop.post(new Runnable() {
+									
+					@Override
+					public void run() {
+						((AnimationDrawable)imgAnimTop.getDrawable()).start();
+						 
+					}
+				});
 		   }
 		 
 	   }
