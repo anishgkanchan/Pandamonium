@@ -15,16 +15,16 @@ public class StatsAdapter extends FragmentStatePagerAdapter {
         switch (i) {
         case 0:
             //Fragement for Android Tab
-            return new LevelActivity("Easy");
+            return new LevelFragment("Easy");
         case 1:
            //Fragment for Ios Tab
-            return new LevelActivity("Medium");
+            return new LevelFragment("Medium");
         case 2:
             //Fragment for Windows Tab
-            return new LevelActivity("Difficult");
+            return new LevelFragment("Difficult");
         case 3:
             //Fragment for Windows Tab
-            return new LevelActivity("Expert");
+            return new LevelFragment("Expert");
         }
         return null;
     }
