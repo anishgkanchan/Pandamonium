@@ -1,9 +1,10 @@
 package com.example.boardg;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+
+import com.example.logic.AlphaLogic;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -30,7 +31,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.logic.AlphaLogic;
 
 public class GameScreenActivity extends Activity {
 
@@ -261,7 +261,7 @@ public class GameScreenActivity extends Activity {
 
 						playerScore.setText(text);
 						opponentScore.setText(data);
-
+							
 					}
 				}
 			}
