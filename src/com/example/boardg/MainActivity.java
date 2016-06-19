@@ -43,6 +43,7 @@ public class MainActivity extends Activity {
 		play.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				System.gc();
 				Intent intent = new Intent(mContext, Options2Activity.class);
 				startActivity(intent);
 				
@@ -52,6 +53,7 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
+				System.gc();
 				Intent intent = new Intent(mContext, HelpActivity.class);
 				startActivity(intent);
 			}
