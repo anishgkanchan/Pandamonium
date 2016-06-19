@@ -88,7 +88,7 @@ public class GameScreenActivity extends Activity {
 		if(singleplayer)
 			message.setText("You will automatically lose the game.");
 		else
-			message.setText("Quit Game");
+			message.setText("Quit game");
 		alertDialogBuilder.setView(v);
 		dialog = alertDialogBuilder.create();
 		dialog.show();
