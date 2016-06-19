@@ -9,7 +9,9 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class WalkThroughActivity extends Activity{
@@ -31,6 +33,18 @@ public class WalkThroughActivity extends Activity{
 		playerScore = (TextView) findViewById(R.id.playerScore);
 		opponentScore = (TextView) findViewById(R.id.opponentScore);
 		initialize();
+		AlphaAnimation animation = new AlphaAnimation(1.0f, 0.0f);
+		TextView tv = (TextView)findViewById(R.id.hello);
+		animation.setDuration(1000);
+		animation.setStartOffset(5000);
+		animation.setFillAfter(true);
+		tv.startAnimation(animation);
+		animation = new AlphaAnimation(0.0f, 1.0f);
+		animation.setDuration(1000);
+		animation.setStartOffset(5000);
+		animation.setFillAfter(true);
+		RelativeLayout layout = (RelativeLayout)findViewById(R.id.main_layout);
+		layout.startAnimation(animation);
 	}
 	
 	void initialize(){
