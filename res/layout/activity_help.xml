@@ -63,6 +63,7 @@ Raid – You can take over any unoccupied territory that is adjacent to one of y
     android:padding="15dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
     android:src="@drawable/raidexample1">
     
 </ImageView>
@@ -78,6 +79,7 @@ Raid – You can take over any unoccupied territory that is adjacent to one of y
     android:padding="15dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
     android:src="@drawable/raidexample2">
     
 </ImageView>
@@ -90,6 +92,7 @@ Raid – You can take over any unoccupied territory that is adjacent to one of y
 
 <ImageView 
     android:padding="15dp"
+    android:layout_gravity="center_horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:src="@drawable/sneakexample1">
@@ -104,6 +107,7 @@ Raid – You can take over any unoccupied territory that is adjacent to one of y
     
 </ImageView><ImageView 
     android:padding="15dp"
+    android:layout_gravity="center_horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:src="@drawable/sneakexample2">

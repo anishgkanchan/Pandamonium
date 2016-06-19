@@ -523,6 +523,61 @@ public class GameScreenActivity extends Activity {
 						opponentScore.setText(data);
 							
 					}
+					if(movesPlayed==25)
+					{
+						boolean lost = logic.getScore(pScore, playerState, 'X') > logic.getScore(pScore, playerState, 'O');
+						v = View.inflate(GameScreenActivity.this, R.layout.dialog, null);
+						TextView title = (TextView)v.findViewById(R.id.title);
+						TextView message = (TextView)v.findViewById(R.id.message);
+						Button btnYes = (Button)v.findViewById(R.id.btn_yes);
+						Button btnNo = (Button)v.findViewById(R.id.btn_no);
+						btnNo.setOnClickListener(new OnClickListener() {
+							
+							@Override
+							public void onClick(View arg0) {
+								dialog.dismiss();
+								GameScreenActivity.this.finish();							
+							}
+						});
+						btnYes.setOnClickListener(new OnClickListener() {
+							
+							@Override
+							public void onClick(View arg0) {
+								dialog.dismiss();
+								init();
+								adapter.notifyDataSetChanged();
+							}
+						});
+						if (logic
+								.getScore(pScore, playerState, 'X') > logic
+								.getScore(pScore, playerState, 'O'))
+						{
+							v.setBackgroundResource(R.drawable.evil_victory_panda);
+							title.setText("Player 2 Won");
+							message.setText("Play Again?");
+							alertDialogBuilder.setView(v);
+							//alertDialogBuilder.set
+						}
+						else{
+							v.setBackgroundResource(R.drawable.victory_panda);
+							title.setText("Player 1 Won");
+							message.setText("Play Again?");
+							alertDialogBuilder.setView(v);
+						}
+						// create alert dialog
+						runOnUiThread(new Runnable() {
+							
+							@Override
+							public void run() {
+								dialog = alertDialogBuilder
+								.create();
+								dialog.show();
+								
+								
+							}
+						});
+				
+					}
 				}
 			}
 		});
@@ -772,3 +827,6 @@ public class GameScreenActivity extends Activity {
 		 
 	   }
 }
+//300*200 hdpi
+//200*__ mdpi
+//150*__ ldpi
