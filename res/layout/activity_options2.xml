@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/back_skin"
     android:gravity="center_vertical"
-    tools:context="com.example.boardg.Options2Activity" >
+    tools:context="com.enigma.pandamonium.Options2Activity" >
 
     <ImageView 
         android:layout_width="wrap_content"

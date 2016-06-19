@@ -1,4 +1,4 @@
-package com.example.boardg;
+package com.enigma.pandamonium;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;

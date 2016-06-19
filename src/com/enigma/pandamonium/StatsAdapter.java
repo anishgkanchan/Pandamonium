@@ -1,4 +1,4 @@
-package com.example.boardg;
+package com.enigma.pandamonium;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

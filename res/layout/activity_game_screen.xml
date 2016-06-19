@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/back_skin"
-    tools:context="com.example.boardg.GameScreenActivity" >
+    tools:context="com.enigma.pandamonium.GameScreenActivity" >
 
     <ImageView
         android:id="@+id/bg_anim_top"
@@ -24,7 +24,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context="com.example.boardg.GameScreenActivity" >
+            tools:context="com.enigma.pandamonium.GameScreenActivity" >
 
             <TextView
                 android:id="@+id/playerScore"

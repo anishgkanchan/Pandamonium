@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/back_skin"
-    tools:context="com.example.boardg.MainActivity" >
+    tools:context="com.enigma.pandamonium.MainActivity" >
 	
     <ImageView 
         android:id="@+id/img_title"
