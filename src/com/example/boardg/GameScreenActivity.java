@@ -92,7 +92,6 @@ public class GameScreenActivity extends Activity {
 		alertDialogBuilder.setView(v);
 		dialog = alertDialogBuilder.create();
 		dialog.show();
-		dialog.getWindow().setLayout(900, 600);
 				
 		
 	}
@@ -307,6 +306,7 @@ public class GameScreenActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				if(playerState[position/5][position%5]=='*'){
 				if (singleplayer) {
 					imgAnimTop.post(
 							new Runnable(){
@@ -523,6 +523,7 @@ public class GameScreenActivity extends Activity {
 						opponentScore.setText(data);
 							
 					}
+					movesPlayed+=1;
 					if(movesPlayed==25)
 					{
 						boolean lost = logic.getScore(pScore, playerState, 'X') > logic.getScore(pScore, playerState, 'O');
@@ -576,9 +577,10 @@ public class GameScreenActivity extends Activity {
 								
 							}
 						});
-				
+						player1 = true;
 					}
 				}
+			}
 			}
 		});
 		gridView.setAdapter(adapter);
