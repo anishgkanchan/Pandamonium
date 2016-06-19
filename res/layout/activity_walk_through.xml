@@ -17,6 +17,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+<TextView android:id="@+id/tutorial"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Tutorial 1/5"
+    android:layout_marginTop="10dp"
+    android:textColor="@color/dark_brown"
+    android:layout_alignParentTop="true"
+    android:layout_centerHorizontal="true"
+    android:textSize="35sp"/>
+
+<TextView android:id="@+id/desciption"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Capture the tile with the highest score."
+    android:textColor="@color/dark_brown"
+    android:layout_marginTop="10dp"
+    android:layout_below="@id/tutorial"
+    android:layout_centerHorizontal="true"
+    android:textSize="15sp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
