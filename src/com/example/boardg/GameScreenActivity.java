@@ -85,7 +85,10 @@ public class GameScreenActivity extends Activity {
 			}
 		});
 		title.setText("Are you sure?");
-		message.setText("You will automatically lose the game.");
+		if(singleplayer)
+			message.setText("You will automatically lose the game.");
+		else
+			message.setText("Quit Game");
 		alertDialogBuilder.setView(v);
 		dialog = alertDialogBuilder.create();
 		dialog.show();
@@ -100,6 +103,7 @@ public class GameScreenActivity extends Activity {
 				int wins=0;
 				int newHighScore = logic.getScore(pScore,
 						playerState, 'O');
+				if(singleplayer){
 				// Statistical Calculations
 				switch (difficulty) {
 				case 1:
@@ -197,6 +201,7 @@ public class GameScreenActivity extends Activity {
 						SharedPreferences.Editor editor3 = sharedPref.edit();
 						editor3.putInt(getString(R.string.expert_high_score),newHighScore);
 						editor3.commit();
+						}
 						if(!lost){
 							maxStreak = sharedPref.getInt(getString(R.string.Maxexstreak), 0);
 							currentStreak = sharedPref.getInt(getString(R.string.exstreak), 0)+1;
@@ -220,10 +225,10 @@ public class GameScreenActivity extends Activity {
 						SharedPreferences.Editor editor4 = sharedPref.edit();
 						editor4.putInt(getString(R.string.Texpert),totalGames+1);
 						editor4.commit();
-					}
-				break;
+						break;
 				default:
 					break;
+				}
 				}
 		   }
 	@Override
@@ -252,6 +257,8 @@ public class GameScreenActivity extends Activity {
 		playerScore = (TextView) findViewById(R.id.playerScore);
 		opponentScore = (TextView) findViewById(R.id.opponentScore);
 		undoImageView = (ImageView) findViewById(R.id.undo_button);
+		if(!singleplayer)
+			undoImageView.setVisibility(View.GONE);
 		imgAnimTop = (ImageView) findViewById(R.id.bg_anim_top);
 		imgAnimBottom = (ImageView) findViewById(R.id.bg_anim_bottom);
 		//Resources res = getResources();
