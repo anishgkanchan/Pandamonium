@@ -43,7 +43,7 @@
         android:textSize="20sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="The kingdom consists of a 5 by 5 grid with a fixed point associated with eah territory based on its importance to the pandas."></TextView>
+        android:text="The kingdom consists of a 5 x 5 grid with a fixed point associated with each territory based on its importance to the pandas."></TextView>
 <TextView
        android:padding="15dp"
         android:textSize="20sp"

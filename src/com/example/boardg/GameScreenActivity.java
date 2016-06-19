@@ -363,8 +363,6 @@ public class GameScreenActivity extends Activity {
 						list.set(position, object);
 						movesPlayed += 1;
 
-
-						playable = false;
 						adapter.notifyDataSetChanged();						
 						final String text = String.format(
 								getResources().getString(
@@ -377,26 +375,114 @@ public class GameScreenActivity extends Activity {
 										.getScore(pScore, playerState,
 												'X'));
 						playerScore.setText(text);
-						opponentScore.setText(data);						
-						new Handler().postDelayed(new Runnable() {
-						    @Override
-						    public void run() {
-								new Task2().execute();
-						    }
-						}, 3000);
-					   
+						opponentScore.setText(data);		
+						playable = false;
+						if(movesPlayed==25)
+						{
+						
+							boolean lost = logic.getScore(pScore, playerState, 'X') > logic.getScore(pScore, playerState, 'O');
+							gameEndSave(lost);
+							v = View.inflate(GameScreenActivity.this, R.layout.dialog, null);
+							TextView title = (TextView)v.findViewById(R.id.title);
+							TextView message = (TextView)v.findViewById(R.id.message);
+							Button btnYes = (Button)v.findViewById(R.id.btn_yes);
+							Button btnNo = (Button)v.findViewById(R.id.btn_no);
+							btnNo.setOnClickListener(new OnClickListener() {
+								
+								@Override
+								public void onClick(View arg0) {
+									dialog.dismiss();
+									GameScreenActivity.this.finish();							
+								}
+							});
+							btnYes.setOnClickListener(new OnClickListener() {
+								
+								@Override
+								public void onClick(View arg0) {
+									dialog.dismiss();
+									init();
+									adapter.notifyDataSetChanged();
+								}
+							});
+							if (logic
+									.getScore(pScore, playerState, 'X') > logic
+									.getScore(pScore, playerState, 'O'))
+							{
+								v.setBackgroundResource(R.drawable.defeat_panda);
+								title.setText("You Lost");
+								message.setText("Play Again?");
+								alertDialogBuilder.setView(v);
+							//alertDialogBuilder.set
+							}
+							else{
+								v.setBackgroundResource(R.drawable.victory_panda);
+								title.setText("You Won");
+								message.setText("Play Again?");
+								alertDialogBuilder.setView(v);
+							}
+							// create alert dialog
+							runOnUiThread(new Runnable() {
+								
+								@Override
+								public void run() {
+									dialog = alertDialogBuilder
+									.create();
+									dialog.show();
+									
+									
+								}
+							});
+					
+						}
+						else{
+							new Handler().postDelayed(new Runnable() {
+							    @Override
+							    public void run() {
+									new Task2().execute();
+							    }
+							}, 3000);
+						}
 					}
 				} else {
+					
 					char player;
 					int playerImage;
 					if (player1) {
 						player = 'O';
 						playerImage = R.drawable.player1;
 						player1 = false;
+						imgAnimTop.post(
+								new Runnable(){
+								  @Override
+								  public void run() {
+									  ((AnimationDrawable)imgAnimTop.getDrawable()).stop();
+								  }
+								});
+						imgAnimBottom.post(
+								new Runnable(){
+								  @Override
+								  public void run() {
+									  ((AnimationDrawable)imgAnimBottom.getDrawable()).start();
+								  }
+								});
 					} else {
 						player = 'X';
 						playerImage = R.drawable.player2;
 						player1 = true;
+						imgAnimTop.post(
+								new Runnable(){
+								  @Override
+								  public void run() {
+									  ((AnimationDrawable)imgAnimTop.getDrawable()).start();
+								  }
+								});
+						imgAnimBottom.post(
+								new Runnable(){
+								  @Override
+								  public void run() {
+									  ((AnimationDrawable)imgAnimBottom.getDrawable()).stop();
+								  }
+								});
 					}
 					if (list.get(position).getImage() == 0) {
 						Nishant object = new Nishant();
@@ -567,7 +653,6 @@ public class GameScreenActivity extends Activity {
 						 }
 					 }));
 				
-				
 			}
 			else if (item.getImage()==R.drawable.player2){
 				runOnUiThread(new Thread(new Runnable() {
@@ -656,60 +741,7 @@ public class GameScreenActivity extends Activity {
 					});
 					
 					playable = true;
-				} else {	
-					boolean lost = logic.getScore(pScore, playerState, 'X') > logic.getScore(pScore, playerState, 'O');
-					gameEndSave(lost);
-					v = View.inflate(GameScreenActivity.this, R.layout.dialog, null);
-					TextView title = (TextView)v.findViewById(R.id.title);
-					TextView message = (TextView)v.findViewById(R.id.message);
-					Button btnYes = (Button)v.findViewById(R.id.btn_yes);
-					Button btnNo = (Button)v.findViewById(R.id.btn_no);
-					btnNo.setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View arg0) {
-							dialog.dismiss();
-							GameScreenActivity.this.finish();							
-						}
-					});
-					btnYes.setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View arg0) {
-							dialog.dismiss();
-							init();
-							adapter.notifyDataSetChanged();
-						}
-					});
-					if (logic
-							.getScore(pScore, playerState, 'X') > logic
-							.getScore(pScore, playerState, 'O'))
-					{
-						v.setBackgroundResource(R.drawable.defeat_panda);
-						title.setText("You Lost");
-						message.setText("Play Again?");
-						alertDialogBuilder.setView(v);
-					//alertDialogBuilder.set
-					}
-					else{
-						v.setBackgroundResource(R.drawable.victory_panda);
-						title.setText("You Won");
-						message.setText("Play Again?");
-						alertDialogBuilder.setView(v);
-					}
-					// create alert dialog
-					runOnUiThread(new Runnable() {
-						
-						@Override
-						public void run() {
-							dialog = alertDialogBuilder
-							.create();
-							dialog.show();
-							
-							
-						}
-					});
-				}
+				} 
 				return null;
 		   }
 		 
