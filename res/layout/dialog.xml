@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="45dp"
-    android:layout_height="30dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:padding="10dp"
     android:orientation="vertical" >
 
@@ -26,7 +26,9 @@
         android:id="@+id/btn_no"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_alignLeft="@+id/message"
+        android:background="@drawable/buttonselector"
         android:layout_below="@+id/message"
         android:text="No" />
      <Button
@@ -34,6 +36,9 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/message"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:background="@drawable/buttonselector"
         android:layout_toRightOf="@+id/btn_no"
         android:text="Yes" />
 

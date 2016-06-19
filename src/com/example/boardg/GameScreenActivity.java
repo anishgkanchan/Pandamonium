@@ -37,6 +37,7 @@ public class GameScreenActivity extends Activity {
 	char playerState[][] = new char[][] { { '*', '*', '*', '*', '*' },
 			{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' },
 			{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' } };
+	View v;
 	SharedPreferences sharedPref;
 	char[][] oldPlayerState = new char[5][5];
 	int movesPlayed = 0; // can have a max value of 25, to identify end of game
@@ -57,9 +58,174 @@ public class GameScreenActivity extends Activity {
 	AlertDialog.Builder alertDialogBuilder;
 	List<Nishant> list;
 	List<Nishant> prevList;
-
 	Resources res; 
 	
+	@Override
+	public void onBackPressed() {
+		v = View.inflate(GameScreenActivity.this, R.layout.dialog, null);
+		v.setBackgroundResource(R.drawable.defeat_panda);
+		TextView title = (TextView)v.findViewById(R.id.title);
+		TextView message = (TextView)v.findViewById(R.id.message);
+		Button btnYes = (Button)v.findViewById(R.id.btn_yes);
+		Button btnNo = (Button)v.findViewById(R.id.btn_no);
+		btnYes.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				gameEndSave(true);
+				dialog.dismiss();
+				GameScreenActivity.this.finish();	
+			}
+		});
+		btnNo.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				dialog.dismiss();
+			}
+		});
+		title.setText("Are you sure?");
+		message.setText("You will automatically lose the game.");
+		alertDialogBuilder.setView(v);
+		dialog = alertDialogBuilder.create();
+		dialog.show();
+		dialog.getWindow().setLayout(900, 600);
+				
+		
+	}
+	protected void gameEndSave(boolean lost) {
+			   
+				int highScore = 0;
+				int currentStreak=0,maxStreak =0,totalGames = 0;
+				int wins=0;
+				int newHighScore = logic.getScore(pScore,
+						playerState, 'O');
+				// Statistical Calculations
+				switch (difficulty) {
+				case 1:
+					highScore = sharedPref.getInt(getString(R.string.easy_high_score),0);
+					if (newHighScore > highScore) {
+						SharedPreferences.Editor editor = sharedPref.edit();
+						editor.putInt(getString(R.string.easy_high_score),newHighScore);
+						editor.commit();
+					}
+					if(!lost){
+						maxStreak = sharedPref.getInt(getString(R.string.Maxestreak), 0);
+						currentStreak = sharedPref.getInt(getString(R.string.estreak), 0);
+						currentStreak++;
+						if(currentStreak>maxStreak){
+							SharedPreferences.Editor editor = sharedPref.edit();
+							editor.putInt(getString(R.string.Maxestreak),currentStreak);
+							editor.putInt(getString(R.string.estreak),currentStreak);
+							editor.commit();
+						}
+						Log.e("output",currentStreak+" "+maxStreak);
+						wins = sharedPref.getInt(getString(R.string.eWins), 0);
+						SharedPreferences.Editor editor = sharedPref.edit();
+						editor.putInt(getString(R.string.eWins),wins+1);
+						editor.commit();
+					}else{
+						SharedPreferences.Editor editor = sharedPref.edit();
+						editor.putInt(getString(R.string.estreak),0);
+						editor.commit();
+					}
+					totalGames = sharedPref.getInt(getString(R.string.Teasy),0);
+					SharedPreferences.Editor editor = sharedPref.edit();
+					editor.putInt(getString(R.string.Teasy),totalGames+1);
+					editor.commit();
+					break;
+				case 2:highScore = sharedPref.getInt(getString(R.string.medium_high_score),0);
+					if (newHighScore > highScore) {
+						SharedPreferences.Editor editor1 = sharedPref.edit();
+						editor1.putInt(getString(R.string.medium_high_score),newHighScore);
+						editor1.commit();
+					}
+					if(!lost){
+						maxStreak = sharedPref.getInt(getString(R.string.Maxmstreak), 0);
+						currentStreak = sharedPref.getInt(getString(R.string.mstreak), 0)+1;
+						if(currentStreak>maxStreak){
+							SharedPreferences.Editor editor1 = sharedPref.edit();
+							editor1.putInt(getString(R.string.Maxmstreak),currentStreak);
+							editor1.putInt(getString(R.string.mstreak),currentStreak);
+							editor1.commit();
+						}
+						wins = sharedPref.getInt(getString(R.string.mWins), 0);
+						SharedPreferences.Editor editor1 = sharedPref.edit();
+						editor1.putInt(getString(R.string.mWins),wins+1);
+						editor1.commit();
+					}else{
+						SharedPreferences.Editor editor1 = sharedPref.edit();
+						editor1.putInt(getString(R.string.mstreak),0);
+						editor1.commit();
+					}
+					totalGames = sharedPref.getInt(getString(R.string.Tmedium),0);
+					SharedPreferences.Editor editor1 = sharedPref.edit();
+					editor1.putInt(getString(R.string.Tmedium),totalGames+1);
+					editor1.commit();
+					break;
+				case 3:highScore = sharedPref.getInt(getString(R.string.difficult_high_score),0);
+					if (newHighScore > highScore) {
+						SharedPreferences.Editor editor2 = sharedPref.edit();
+						editor2.putInt(getString(R.string.difficult_high_score),newHighScore);
+						editor2.commit();
+					}
+					if(!lost){
+						maxStreak = sharedPref.getInt(getString(R.string.Maxdstreak), 0);
+						currentStreak = sharedPref.getInt(getString(R.string.dstreak), 0)+1;
+						if(currentStreak>maxStreak){
+							SharedPreferences.Editor editor2 = sharedPref.edit();
+							editor2.putInt(getString(R.string.Maxdstreak),currentStreak);
+							editor2.putInt(getString(R.string.dstreak),currentStreak);
+							editor2.commit();
+						}
+						wins = sharedPref.getInt(getString(R.string.dWins), 0);
+						SharedPreferences.Editor editor2 = sharedPref.edit();
+						editor2.putInt(getString(R.string.dWins),wins+1);
+						editor2.commit();
+					}else{
+						SharedPreferences.Editor editor2 = sharedPref.edit();
+						editor2.putInt(getString(R.string.dstreak),0);
+						editor2.commit();
+					}
+					totalGames = sharedPref.getInt(getString(R.string.Tdifficult),0);
+					SharedPreferences.Editor editor2 = sharedPref.edit();
+					editor2.putInt(getString(R.string.Tdifficult),totalGames+1);
+					editor2.commit();
+					break;
+				case 4:highScore = sharedPref.getInt(getString(R.string.expert_high_score),0);
+					if (newHighScore > highScore) {
+						SharedPreferences.Editor editor3 = sharedPref.edit();
+						editor3.putInt(getString(R.string.expert_high_score),newHighScore);
+						editor3.commit();
+						if(!lost){
+							maxStreak = sharedPref.getInt(getString(R.string.Maxexstreak), 0);
+							currentStreak = sharedPref.getInt(getString(R.string.exstreak), 0)+1;
+							if(currentStreak>maxStreak){
+								SharedPreferences.Editor editor4= sharedPref.edit();
+								editor4.putInt(getString(R.string.Maxexstreak),currentStreak);
+								editor4.putInt(getString(R.string.exstreak),currentStreak);
+								editor4.commit();
+
+							}
+							wins = sharedPref.getInt(getString(R.string.exWins), 0);
+							SharedPreferences.Editor editor4 = sharedPref.edit();
+							editor4.putInt(getString(R.string.exWins),wins+1);
+							editor4.commit();
+						}else{
+							SharedPreferences.Editor editor4 = sharedPref.edit();
+							editor4.putInt(getString(R.string.exstreak),0);
+							editor4.commit();
+						}
+						totalGames = sharedPref.getInt(getString(R.string.Texpert),0);
+						SharedPreferences.Editor editor4 = sharedPref.edit();
+						editor4.putInt(getString(R.string.Texpert),totalGames+1);
+						editor4.commit();
+					}
+				break;
+				default:
+					break;
+				}
+		   }
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		sharedPref = this.getSharedPreferences("Shared Preference",
@@ -103,9 +269,10 @@ public class GameScreenActivity extends Activity {
 							playerState[i][j] = oldPlayerState[i][j];
 						}
 					}
-					if(same)
+					if(same){
 						Toast.makeText(GameScreenActivity.this, "You can only undo 1 move at a time.", Toast.LENGTH_SHORT).show();
-
+						movesPlayed += 2;
+					}
 					copyStuff(list, prevList);
 					adapter.notifyDataSetChanged();
 					movesPlayed -= 2;
@@ -482,122 +649,10 @@ public class GameScreenActivity extends Activity {
 					});
 					
 					playable = true;
-				} else {			boolean lost = logic.getScore(pScore, playerState, 'X') > logic.getScore(pScore, playerState, 'O');
-									int highScore = 0;
-									int currentStreak=0,maxStreak =0,totalGames = 0;
-									int wins=0;
-									int newHighScore = logic.getScore(pScore,
-											playerState, 'O');
-									// Statistical Calculations
-									switch (difficulty) {
-									case 1:
-										highScore = sharedPref.getInt(getString(R.string.easy_high_score),0);
-										if (newHighScore > highScore) {
-											SharedPreferences.Editor editor = sharedPref.edit();
-											editor.putInt(getString(R.string.easy_high_score),newHighScore);
-											editor.commit();
-										}
-										if(!lost){
-											maxStreak = sharedPref.getInt(getString(R.string.Maxestreak), 0);
-											currentStreak = sharedPref.getInt(getString(R.string.estreak), 0);
-											currentStreak++;
-											if(currentStreak>maxStreak){
-												SharedPreferences.Editor editor = sharedPref.edit();
-												editor.putInt(getString(R.string.Maxestreak),currentStreak);
-												editor.putInt(getString(R.string.estreak),currentStreak);
-												editor.commit();
-											}
-											Log.e("output",currentStreak+" "+maxStreak);
-											wins = sharedPref.getInt(getString(R.string.eWins), 0);
-											SharedPreferences.Editor editor = sharedPref.edit();
-											editor.putInt(getString(R.string.eWins),wins+1);
-											editor.commit();
-										}
-										totalGames = sharedPref.getInt(getString(R.string.Teasy),0);
-										SharedPreferences.Editor editor = sharedPref.edit();
-										editor.putInt(getString(R.string.Teasy),totalGames+1);
-										editor.commit();
-										break;
-									case 2:highScore = sharedPref.getInt(getString(R.string.medium_high_score),0);
-										if (newHighScore > highScore) {
-											SharedPreferences.Editor editor1 = sharedPref.edit();
-											editor1.putInt(getString(R.string.medium_high_score),newHighScore);
-											editor1.commit();
-										}
-										if(!lost){
-											maxStreak = sharedPref.getInt(getString(R.string.Maxmstreak), 0);
-											currentStreak = sharedPref.getInt(getString(R.string.mstreak), 0)+1;
-											if(currentStreak>maxStreak){
-												SharedPreferences.Editor editor1 = sharedPref.edit();
-												editor1.putInt(getString(R.string.Maxmstreak),currentStreak);
-												editor1.putInt(getString(R.string.mstreak),currentStreak);
-												editor1.commit();
-											}
-											wins = sharedPref.getInt(getString(R.string.mWins), 0);
-											SharedPreferences.Editor editor1 = sharedPref.edit();
-											editor1.putInt(getString(R.string.mWins),wins+1);
-											editor1.commit();
-										}
-										totalGames = sharedPref.getInt(getString(R.string.Tmedium),0);
-										SharedPreferences.Editor editor1 = sharedPref.edit();
-										editor1.putInt(getString(R.string.Tmedium),totalGames+1);
-										editor1.commit();
-										break;
-									case 3:highScore = sharedPref.getInt(getString(R.string.difficult_high_score),0);
-										if (newHighScore > highScore) {
-											SharedPreferences.Editor editor2 = sharedPref.edit();
-											editor2.putInt(getString(R.string.difficult_high_score),newHighScore);
-											editor2.commit();
-										}
-										if(!lost){
-											maxStreak = sharedPref.getInt(getString(R.string.Maxdstreak), 0);
-											currentStreak = sharedPref.getInt(getString(R.string.dstreak), 0)+1;
-											if(currentStreak>maxStreak){
-												SharedPreferences.Editor editor2 = sharedPref.edit();
-												editor2.putInt(getString(R.string.Maxdstreak),currentStreak);
-												editor2.putInt(getString(R.string.dstreak),currentStreak);
-												editor2.commit();
-											}
-											wins = sharedPref.getInt(getString(R.string.dWins), 0);
-											SharedPreferences.Editor editor2 = sharedPref.edit();
-											editor2.putInt(getString(R.string.dWins),wins+1);
-											editor2.commit();
-										}
-										totalGames = sharedPref.getInt(getString(R.string.Tdifficult),0);
-										SharedPreferences.Editor editor2 = sharedPref.edit();
-										editor2.putInt(getString(R.string.Tdifficult),totalGames+1);
-										editor2.commit();
-										break;
-									case 4:highScore = sharedPref.getInt(getString(R.string.expert_high_score),0);
-										if (newHighScore > highScore) {
-											SharedPreferences.Editor editor3 = sharedPref.edit();
-											editor3.putInt(getString(R.string.expert_high_score),newHighScore);
-											editor3.commit();
-											if(!lost){
-												maxStreak = sharedPref.getInt(getString(R.string.Maxexstreak), 0);
-												currentStreak = sharedPref.getInt(getString(R.string.exstreak), 0)+1;
-												if(currentStreak>maxStreak){
-													SharedPreferences.Editor editor4= sharedPref.edit();
-													editor4.putInt(getString(R.string.Maxexstreak),currentStreak);
-													editor4.putInt(getString(R.string.exstreak),currentStreak);
-													editor4.commit();
-		
-												}
-												wins = sharedPref.getInt(getString(R.string.exWins), 0);
-												SharedPreferences.Editor editor4 = sharedPref.edit();
-												editor4.putInt(getString(R.string.exWins),wins+1);
-												editor4.commit();
-											}
-											totalGames = sharedPref.getInt(getString(R.string.Texpert),0);
-											SharedPreferences.Editor editor4 = sharedPref.edit();
-											editor4.putInt(getString(R.string.Texpert),totalGames+1);
-											editor4.commit();
-										}
-									break;
-									default:
-										break;
-									}
-					View v = View.inflate(GameScreenActivity.this, R.layout.dialog, null);
+				} else {	
+					boolean lost = logic.getScore(pScore, playerState, 'X') > logic.getScore(pScore, playerState, 'O');
+					gameEndSave(lost);
+					v = View.inflate(GameScreenActivity.this, R.layout.dialog, null);
 					TextView title = (TextView)v.findViewById(R.id.title);
 					TextView message = (TextView)v.findViewById(R.id.message);
 					Button btnYes = (Button)v.findViewById(R.id.btn_yes);
@@ -626,7 +681,7 @@ public class GameScreenActivity extends Activity {
 						v.setBackgroundResource(R.drawable.defeat_panda);
 						title.setText("You Lost");
 						message.setText("Play Again?");
-						alertDialogBuilder.setView(null).setView(v);
+						alertDialogBuilder.setView(v);
 					//alertDialogBuilder.set
 					}
 					else{
@@ -644,12 +699,14 @@ public class GameScreenActivity extends Activity {
 							.create();
 							dialog.show();
 							
+							
 						}
 					});
 				}
 				return null;
 		   }
 		 
+
 		   @Override
 		   protected void onProgressUpdate(Integer... values) {
 		      super.onProgressUpdate(values);
@@ -672,6 +729,7 @@ public class GameScreenActivity extends Activity {
 					}
 				});
 		   }
+		   
 		 
 	   }
 }
