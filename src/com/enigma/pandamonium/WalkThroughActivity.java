@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -25,9 +26,12 @@ public class WalkThroughActivity extends Activity{
 	String p1,p2;
 	AlphaLogic logic;
 	GridViewAdapter adapter;
+	AlphaAnimation animation;
 	boolean playable;
+	int level = 1;
 	int pScore[][] = new int[5][5];
-	TextView playerScore, opponentScore, txtTutorial, txtDescription;
+	RelativeLayout messageLayout;
+	TextView playerScore, opponentScore, txtTutorial, txtDescription, next;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		logic = new AlphaLogic();
@@ -42,18 +46,55 @@ public class WalkThroughActivity extends Activity{
 		txtDescription = (TextView)findViewById(R.id.desciption);
 		opponentScore = (TextView) findViewById(R.id.opponentScore);
 		initialize();
-		AlphaAnimation animation = new AlphaAnimation(1.0f, 0.0f);
+		animation = new AlphaAnimation(1.0f, 0.0f);
 		TextView tv = (TextView)findViewById(R.id.hello);
 		animation.setDuration(1000);
-		animation.setStartOffset(5000);
+		animation.setStartOffset(1000);
 		animation.setFillAfter(true);
 		tv.startAnimation(animation);
 		animation = new AlphaAnimation(0.0f, 1.0f);
 		animation.setDuration(1000);
-		animation.setStartOffset(5000);
+		animation.setStartOffset(3000);
 		animation.setFillAfter(true);
 		RelativeLayout layout = (RelativeLayout)findViewById(R.id.main_layout);
 		layout.startAnimation(animation);
+		messageLayout = (RelativeLayout)findViewById(R.id.message);
+		next = (TextView)findViewById(R.id.next);
+		next.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				if(level==1){
+					animation = new AlphaAnimation(1.0f, 0.0f);
+					animation.setDuration(1000);
+					animation.setFillAfter(true);
+					messageLayout.startAnimation(animation);
+					//part 2 tutorial
+					CellState object = new CellState();
+					object.setImage(R.drawable.player2);
+					playerState[3][0] = 'X';
+					object.setScore(list.get(15).getScore());
+					list.set(15, object);
+					adapter.notifyDataSetChanged();						
+					p1 = String.format(
+							getResources().getString(
+									R.string.player_score), logic
+									.getScore(pScore, playerState,
+											'O'));
+					p2 = String.format(
+							getResources().getString(
+									R.string.opponent_score), logic
+									.getScore(pScore, playerState,
+											'X'));
+					playerScore.setText(p1);
+					opponentScore.setText(p2);
+					txtTutorial.setText("Tutorial 2/5");
+					txtDescription.setText("Capture the enemy panda by playing at the tile adjacent to your panda");
+
+					level+=1;
+				}
+			}
+		});
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -77,28 +118,10 @@ public class WalkThroughActivity extends Activity{
 											'X'));
 					playerScore.setText(p1);
 					opponentScore.setText(p2);
-					
-					//part 2 tutorial
-					object = new CellState();
-					object.setImage(R.drawable.player2);
-					playerState[3][0] = 'X';
-					object.setScore(list.get(15).getScore());
-					list.set(15, object);
-					adapter.notifyDataSetChanged();						
-					p1 = String.format(
-							getResources().getString(
-									R.string.player_score), logic
-									.getScore(pScore, playerState,
-											'O'));
-					p2 = String.format(
-							getResources().getString(
-									R.string.opponent_score), logic
-									.getScore(pScore, playerState,
-											'X'));
-					playerScore.setText(p1);
-					opponentScore.setText(p2);
-					txtTutorial.setText("Tutorial 2/5");
-					txtDescription.setText("Capture the enemy panda by playing at the tile adjacent to your panda");
+					animation = new AlphaAnimation(0.0f, 1.0f);
+					animation.setDuration(1000);
+					animation.setFillAfter(true);
+					messageLayout.startAnimation(animation);
 				}
 				if(position == 16){
 					CellState object = new CellState();
