@@ -18,7 +18,7 @@ public class StatsActivity extends FragmentActivity implements TabLayout.OnTabSe
     	this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.stats_screen);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Statistics");
+        toolbar.setTitle("STATISTICS");
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Easy"));
         tabLayout.addTab(tabLayout.newTab().setText("Medium"));

@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -33,7 +34,8 @@ public class WalkThroughActivity extends Activity{
 	RelativeLayout tv;
 	Button btnTutorial;
 	boolean playable;
-	int level = 1;
+	int level = 0;
+	boolean messageVisible = false;
 	int pScore[][] = new int[5][5];
 	RelativeLayout messageLayout;
 	TextView playerScore, opponentScore, txtTutorial, txtDescription, next, txtProgress;
@@ -62,16 +64,19 @@ public class WalkThroughActivity extends Activity{
 			
 			@Override
 			public void onClick(View arg0) {
-				animation = new AlphaAnimation(1.0f, 0.0f);
-				animation.setDuration(500);
-				animation.setStartOffset(500);
-				animation.setFillAfter(true);
-				tv.startAnimation(animation);
-				animation = new AlphaAnimation(0.0f, 1.0f);
-				animation.setDuration(500);
-				animation.setStartOffset(500);
-				animation.setFillAfter(true);
-				layout.startAnimation(animation);
+				if (level == 0) {
+					animation = new AlphaAnimation(1.0f, 0.0f);
+					animation.setDuration(500);
+					animation.setStartOffset(500);
+					animation.setFillAfter(true);
+					tv.startAnimation(animation);
+					animation = new AlphaAnimation(0.0f, 1.0f);
+					animation.setDuration(500);
+					animation.setStartOffset(500);
+					animation.setFillAfter(true);
+					layout.startAnimation(animation);
+					level = 1;
+				}
 				
 			}
 		});
@@ -79,99 +84,102 @@ public class WalkThroughActivity extends Activity{
 			
 			@Override
 			public void onClick(View arg0) {
-				animation = new AlphaAnimation(1.0f, 0.0f);
-				animation.setDuration(1000);
-				animation.setFillAfter(true);
-				messageLayout.startAnimation(animation);
-				if(level==1){
-					//part 2 tutorial
-					CellState object = new CellState();
-					object.setImage(R.drawable.player2);
-					playerState[3][0] = 'X';
-					object.setScore(list.get(15).getScore());
-					list.set(15, object);
-					adapter.notifyDataSetChanged();						
-					p1 = String.format(
-							getResources().getString(
-									R.string.player_score), logic
-									.getScore(pScore, playerState,
-											'O'));
-					p2 = String.format(
-							getResources().getString(
-									R.string.opponent_score), logic
-									.getScore(pScore, playerState,
-											'X'));
-					playerScore.setText(p1);
-					opponentScore.setText(p2);
-					txtTutorial.setText("Tutorial 2/4");
-					txtDescription.setText("Capture the enemy panda by playing at the tile adjacent to your panda");
-					level+=1;
-					CellState object1 = list.get(16);
-					object1.setImage(R.drawable.blink1);
-					list.set(16, object1);
-				}else if(level ==2){
-					initialize();
-					CellState object = new CellState();
-					object.setImage(R.drawable.player2);
-					playerState[3][2] = 'X';
-					object.setScore(list.get(17).getScore());
-					list.set(17, object);
-					object = new CellState();
-					object.setImage(R.drawable.player2);
-					playerState[2][1] = 'X';
-					object.setScore(list.get(11).getScore());
-					list.set(11, object);
-					adapter.notifyDataSetChanged();						
-					p1 = String.format(
-							getResources().getString(
-									R.string.player_score), logic
-									.getScore(pScore, playerState,
-											'O'));
-					p2 = String.format(
-							getResources().getString(
-									R.string.opponent_score), logic
-									.getScore(pScore, playerState,
-											'X'));
-					playerScore.setText(p1);
-					opponentScore.setText(p2);
-					level+=1;
-					txtTutorial.setText("Tutorial 3/4");
-					txtDescription.setText("You can't capture enemy Panda's if you don't have your own Panda adjacent to your next move.");
-					CellState object1 = list.get(12);
-					object1.setImage(R.drawable.blink1);
-					list.set(12, object1);
-				}else if(level == 3){
-					CellState object = new CellState();
-					object.setImage(0);
-					playerState[2][2] = '*';
-					object.setScore(list.get(12).getScore());
-					list.set(12, object);
-					object = new CellState();
-					object.setImage(R.drawable.player1);
-					playerState[1][2] = 'O';
-					object.setScore(list.get(7).getScore());
-					list.set(7, object);
-					adapter.notifyDataSetChanged();						
-					p1 = String.format(
-							getResources().getString(
-									R.string.player_score), logic
-									.getScore(pScore, playerState,
-											'O'));
-					p2 = String.format(
-							getResources().getString(
-									R.string.opponent_score), logic
-									.getScore(pScore, playerState,
-											'X'));
-					playerScore.setText(p1);
-					opponentScore.setText(p2);
-					level+=1;
-					txtTutorial.setText("Tutorial 4/4");
-					txtDescription.setText("However if you do have your own panda next to your next move, you can capture enemy Pandas");
-					CellState object1 = list.get(12);
-					object1.setImage(R.drawable.blink1);
-					list.set(12, object1);
-				}else if(level == 4){
-					WalkThroughActivity.this.finish();
+				if(messageVisible) 
+				{
+					messageVisible = false;
+					animation = new AlphaAnimation(1.0f, 0.0f);
+					animation.setDuration(1000);
+					animation.setFillAfter(true);
+					messageLayout.startAnimation(animation);
+					if(level==1){
+						CellState object = new CellState();
+						object.setImage(R.drawable.player2);
+						playerState[3][0] = 'X';
+						object.setScore(list.get(15).getScore());
+						list.set(15, object);
+						adapter.notifyDataSetChanged();						
+						p1 = String.format(
+								getResources().getString(
+										R.string.player_score), logic
+										.getScore(pScore, playerState,
+												'O'));
+						p2 = String.format(
+								getResources().getString(
+										R.string.opponent_score), logic
+										.getScore(pScore, playerState,
+												'X'));
+						playerScore.setText(p1);
+						opponentScore.setText(p2);
+						txtTutorial.setText("Tutorial 2/4");
+						txtDescription.setText("Capture the enemy panda by playing at the tile adjacent to your panda");
+						level+=1;
+						CellState object1 = list.get(16);
+						object1.setImage(R.drawable.blink1);
+						list.set(16, object1);
+					}else if(level ==2){
+						initialize();
+						CellState object = new CellState();
+						object.setImage(R.drawable.player2);
+						playerState[3][2] = 'X';
+						object.setScore(list.get(17).getScore());
+						list.set(17, object);
+						object = new CellState();
+						object.setImage(R.drawable.player2);
+						playerState[2][1] = 'X';
+						object.setScore(list.get(11).getScore());
+						list.set(11, object);
+						adapter.notifyDataSetChanged();						
+						p1 = String.format(
+								getResources().getString(
+										R.string.player_score), logic
+										.getScore(pScore, playerState,
+												'O'));
+						p2 = String.format(
+								getResources().getString(
+										R.string.opponent_score), logic
+										.getScore(pScore, playerState,
+												'X'));
+						playerScore.setText(p1);
+						opponentScore.setText(p2);
+						level+=1;
+						txtTutorial.setText("Tutorial 3/4");
+						txtDescription.setText("You can't capture enemy Pandas if you don't have your own Panda adjacent to your next move.");
+						CellState object1 = list.get(12);
+						object1.setImage(R.drawable.blink1);
+						list.set(12, object1);
+					}else if(level == 3){
+						CellState object = new CellState();
+						object.setImage(0);
+						playerState[2][2] = '*';
+						object.setScore(list.get(12).getScore());
+						list.set(12, object);
+						object = new CellState();
+						object.setImage(R.drawable.player1);
+						playerState[1][2] = 'O';
+						object.setScore(list.get(7).getScore());
+						list.set(7, object);
+						adapter.notifyDataSetChanged();						
+						p1 = String.format(
+								getResources().getString(
+										R.string.player_score), logic
+										.getScore(pScore, playerState,
+												'O'));
+						p2 = String.format(
+								getResources().getString(
+										R.string.opponent_score), logic
+										.getScore(pScore, playerState,
+												'X'));
+						playerScore.setText(p1);
+						opponentScore.setText(p2);
+						level+=1;
+						txtTutorial.setText("Tutorial 4/4");
+						txtDescription.setText("However if you do have your own panda next to your next move, you can capture enemy Pandas");
+						CellState object1 = list.get(12);
+						object1.setImage(R.drawable.blink1);
+						list.set(12, object1);
+					}else if(level == 4){
+						WalkThroughActivity.this.finish();
+					}
 				}
 			}
 		});
@@ -179,7 +187,9 @@ public class WalkThroughActivity extends Activity{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				if(position == 17 && level == 1){
+				System.out.println("Item clicked "+position);
+				Log.e("", "Item clicked "+position);
+				if(position == 17 && level == 1 && messageVisible == false){
 					CellState object = new CellState();
 					object.setImage(R.drawable.player1);
 					playerState[position / 5][position % 5] = 'O';
@@ -203,7 +213,8 @@ public class WalkThroughActivity extends Activity{
 					animation.setDuration(1000);
 					animation.setFillAfter(true);
 					messageLayout.startAnimation(animation);
-				}else if(position == 16 && level == 2){
+					messageVisible = true;
+				}else if(position == 16 && level == 2 && messageVisible == false){
 					CellState object = new CellState();
 					object.setImage(R.drawable.player1);
 					playerState[position / 5][position % 5] = 'O';
@@ -227,12 +238,13 @@ public class WalkThroughActivity extends Activity{
 											'X'));
 					playerScore.setText(p1);
 					opponentScore.setText(p2);
-					txtProgress.setText("Woohhooo!! No more enemy Panda's there.");
+					txtProgress.setText("Woohhooo!! No more enemy Pandas there.");
 					animation = new AlphaAnimation(0.0f, 1.0f);
 					animation.setDuration(1000);
 					animation.setFillAfter(true);
 					messageLayout.startAnimation(animation);
-				}else if(position == 12 && level == 3){
+					messageVisible = true;
+				}else if(position == 12 && level == 3 && messageVisible == false){
 					CellState object = new CellState();
 					object.setImage(R.drawable.player1);
 					playerState[position / 5][position % 5] = 'O';
@@ -251,12 +263,13 @@ public class WalkThroughActivity extends Activity{
 											'X'));
 					playerScore.setText(p1);
 					opponentScore.setText(p2);
-					txtProgress.setText("It's not always possible to capture enemy Panda's but you know that now!");
+					txtProgress.setText("It's not always possible to capture enemy Pandas but you know that now!");
 					animation = new AlphaAnimation(0.0f, 1.0f);
 					animation.setDuration(1000);
 					animation.setFillAfter(true);
 					messageLayout.startAnimation(animation);
-				}else if(position == 12 && level == 4){
+					messageVisible = true;
+				}else if(position == 12 && level == 4 && messageVisible == false){
 					CellState object = new CellState();
 					object.setImage(R.drawable.player1);
 					playerState[position / 5][position % 5] = 'O';
@@ -291,7 +304,7 @@ public class WalkThroughActivity extends Activity{
 					animation.setDuration(1000);
 					animation.setFillAfter(true);
 					messageLayout.startAnimation(animation);
-					
+					messageVisible = true;
 				}
 				
 				
