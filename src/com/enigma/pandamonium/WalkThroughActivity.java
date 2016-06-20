@@ -22,11 +22,12 @@ public class WalkThroughActivity extends Activity{
 	GridView gridView;
 	List<CellState> list;
 	char[][] playerState;
+	String p1,p2;
 	AlphaLogic logic;
 	GridViewAdapter adapter;
 	boolean playable;
 	int pScore[][] = new int[5][5];
-	TextView playerScore, opponentScore;
+	TextView playerScore, opponentScore, txtTutorial, txtDescription;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		logic = new AlphaLogic();
@@ -37,6 +38,8 @@ public class WalkThroughActivity extends Activity{
 		setContentView(R.layout.activity_walk_through);
 		gridView = (GridView) findViewById(R.id.boardgrid);
 		playerScore = (TextView) findViewById(R.id.playerScore);
+		txtTutorial =(TextView) findViewById(R.id.tutorial);
+		txtDescription = (TextView)findViewById(R.id.desciption);
 		opponentScore = (TextView) findViewById(R.id.opponentScore);
 		initialize();
 		AlphaAnimation animation = new AlphaAnimation(1.0f, 0.0f);
@@ -62,19 +65,70 @@ public class WalkThroughActivity extends Activity{
 					object.setScore(list.get(position).getScore());
 					list.set(position, object);
 					adapter.notifyDataSetChanged();						
-					final String text = String.format(
+					p1 = String.format(
 							getResources().getString(
 									R.string.player_score), logic
 									.getScore(pScore, playerState,
 											'O'));
-					final String data = String.format(
+					p2 = String.format(
 							getResources().getString(
 									R.string.opponent_score), logic
 									.getScore(pScore, playerState,
 											'X'));
-					playerScore.setText(text);
-					opponentScore.setText(data);
+					playerScore.setText(p1);
+					opponentScore.setText(p2);
+					
+					//part 2 tutorial
+					object = new CellState();
+					object.setImage(R.drawable.player2);
+					playerState[3][0] = 'X';
+					object.setScore(list.get(15).getScore());
+					list.set(15, object);
+					adapter.notifyDataSetChanged();						
+					p1 = String.format(
+							getResources().getString(
+									R.string.player_score), logic
+									.getScore(pScore, playerState,
+											'O'));
+					p2 = String.format(
+							getResources().getString(
+									R.string.opponent_score), logic
+									.getScore(pScore, playerState,
+											'X'));
+					playerScore.setText(p1);
+					opponentScore.setText(p2);
+					txtTutorial.setText("Tutorial 2/5");
+					txtDescription.setText("Capture the enemy panda by playing at the tile adjacent to your panda");
 				}
+				if(position == 16){
+					CellState object = new CellState();
+					object.setImage(R.drawable.player1);
+					playerState[position / 5][position % 5] = 'O';
+					object.setScore(list.get(position).getScore());
+					list.set(position, object);
+					object = new CellState();
+					object.setImage(R.drawable.player1);
+					playerState[3][0] = 'O';
+					object.setScore(list.get(15).getScore());
+					list.set(15, object);
+					adapter.notifyDataSetChanged();
+					p1 = String.format(
+							getResources().getString(
+									R.string.player_score), logic
+									.getScore(pScore, playerState,
+											'O'));
+					p2 = String.format(
+							getResources().getString(
+									R.string.opponent_score), logic
+									.getScore(pScore, playerState,
+											'X'));
+					playerScore.setText(p1);
+					opponentScore.setText(p2);
+					txtTutorial.setText("Tutorial 3/5");
+					txtDescription.setText("Capture the enemy panda by playing at the tile adjacent to your panda");
+				}
+				
+				
 			}
 		});
 	}

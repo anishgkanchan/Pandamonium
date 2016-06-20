@@ -30,20 +30,20 @@
 <TextView android:id="@+id/desciption"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
     android:text="Capture the tile with the highest score."
     android:textColor="@color/dark_brown"
     android:layout_marginTop="10dp"
     android:layout_below="@id/tutorial"
     android:layout_centerHorizontal="true"
-    android:textSize="15sp"/>
+    android:textSize="20sp"/>
 
     <LinearLayout
-        android:layout_below="@id/desciption"
-        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp" >
 
