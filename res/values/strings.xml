@@ -15,23 +15,27 @@
     <string name="saved_high_score">High Score</string>
     <string name="easy_high_score">Easy High Score</string>
     <string name="medium_high_score">Medium High Score</string>
-	<string name="difficult_high_score">Difficult High Score</string>
-	<string name="expert_high_score">Expert High Score</string>
-	<string name="estreak">Easy Streak</string>
-	<string name="mstreak">Medium Streak</string>
-	<string name="dstreak">Difficult Streak</string>
-	<string name="exstreak">Expert Streak</string>
-	<string name="Maxestreak">Max Easy Streak</string>
-	<string name="Maxmstreak">Max Medium Streak</string>
-	<string name="Maxdstreak">Max Difficult Streak</string>
-	<string name="Maxexstreak">Max Expert Streak</string>
-	<string name="Teasy">Total Easy</string>
-	<string name="Tmedium">Total Medium</string>
-	<string name="Tdifficult">Total Difficult</string>
-	<string name="Texpert">Total Expert</string>
-	<string name="eWins">Easy Wins</string>
-	<string name="mWins">Medium Wins</string>
-	<string name="dWins">Difficult Wins</string>
-	<string name="exWins">Expert Wins</string>
-	<string name="help">The battle has begun, the Evil Pandas are trying to capture territories with the most Fubla (the magical substance that gives all Pandas their secret Kung-Fu powers). You however, the all knowing Dragon Warrior can stop them with your inner peace and logic skills. Your mission, if you choose to accept is to capture the territories with the highest Fubla Counts and finally have dominion over the Evil Pandas. Fight On.  </string>
+    <string name="difficult_high_score">Difficult High Score</string>
+    <string name="expert_high_score">Expert High Score</string>
+    <string name="estreak">Easy Streak</string>
+    <string name="mstreak">Medium Streak</string>
+    <string name="dstreak">Difficult Streak</string>
+    <string name="exstreak">Expert Streak</string>
+    <string name="Maxestreak">Max Easy Streak</string>
+    <string name="Maxmstreak">Max Medium Streak</string>
+    <string name="Maxdstreak">Max Difficult Streak</string>
+    <string name="Maxexstreak">Max Expert Streak</string>
+    <string name="Teasy">Total Easy</string>
+    <string name="Tmedium">Total Medium</string>
+    <string name="Tdifficult">Total Difficult</string>
+    <string name="Texpert">Total Expert</string>
+    <string name="eWins">Easy Wins</string>
+    <string name="mWins">Medium Wins</string>
+    <string name="dWins">Difficult Wins</string>
+    <string name="exWins">Expert Wins</string>
+    <string name="help">The battle has begun, the Evil Pandas are trying to capture territories with the most Fubla (the magical substance that gives all Pandas their secret Kung-Fu powers). You however, the all knowing Dragon Warrior can stop them with your inner peace and logic skills. Your mission, if you choose to accept is to capture the territories with the highest Fubla Counts and finally have dominion over the Evil Pandas. Fight On.  </string>
+    <string name="title_activity_main_real">MainActivity</string>
+     <string name="first_time">First</string>
+    
+
 </resources>

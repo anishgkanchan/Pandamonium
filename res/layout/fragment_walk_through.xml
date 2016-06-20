@@ -50,7 +50,7 @@ android:layout_centerHorizontal="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible"
-        tools:context="com.enigma.pandamonium.WalkThroughActivity" >
+        tools:context="com.enigma.pandamonium.WalkThroughFragment" >
 
         <TextView
             android:id="@+id/tutorial"
@@ -89,7 +89,7 @@ android:layout_centerHorizontal="true"
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:context="com.enigma.pandamonium.WalkThroughActivity" >
+                tools:context="com.enigma.pandamonium.WalkThroughFragment" >
 
                 <TextView
                     android:id="@+id/playerScore"
@@ -142,9 +142,9 @@ android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:background="@color/light_brown"
+        android:background="#ffffff"
         android:visibility="invisible"
-        tools:context="com.enigma.pandamonium.WalkThroughActivity" >
+        tools:context="com.enigma.pandamonium.WalkThroughFragment" >
 
         <TextView
             android:id="@+id/text_progress"
@@ -164,7 +164,7 @@ android:layout_centerHorizontal="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
-            android:background="@color/dark_brown"
+            android:background="@color/light_brown"
             android:padding="10dp"
             android:text="Next" />
     </RelativeLayout>

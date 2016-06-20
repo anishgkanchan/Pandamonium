@@ -1,65 +1,53 @@
 package com.enigma.pandamonium;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageView;
 
-public class MainActivity extends Activity {
-	private Button play; 
-	private Button help;
-	Context mContext;
-	ImageView imgVideo;
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+public class MainActivity extends FragmentActivity {
 
-		//Remove notification bar
-		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		
-		mContext = this;
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		play = (Button)findViewById(R.id.btn_play);
-		help = (Button)findViewById(R.id.btn_how2play);
-		imgVideo = (ImageView)findViewById(R.id.img_video);
-		imgVideo.post(
-				new Runnable(){
-				  @Override
-				  public void run() {
-					  ((AnimationDrawable)imgVideo.getDrawable()).start();
-				  }
-				});
-		play.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				System.gc();
-				Intent intent = new Intent(mContext, Options2Activity.class);
-				startActivity(intent);
-				
-			}
-		});
-		help.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				System.gc();
-				Intent intent = new Intent(mContext, WalkThroughActivity.class);
-				startActivity(intent);
-			}
-		});
-	}
 	
 	@Override
-	protected void onResume() {
-		super.onResume();
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setContentView(R.layout.activity_main);
+		//this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
+			SharedPreferences sharedPref = getSharedPreferences("Shared Preference", Context.MODE_PRIVATE);
+			int mode = sharedPref.getInt(getString(R.string.first_time), 0);
+
+			 FragmentManager fm = getSupportFragmentManager();
+			 FragmentTransaction fragmentTransaction = fm.beginTransaction();
+			 Fragment fr;
+			 if(mode == 0) {
+			     fr = new WalkThroughFragment();
+				 fragmentTransaction.replace(R.id.fragment_place, fr, "Walkthrough");
+			 }else {
+			     fr = new MainFragment();
+				 fragmentTransaction.replace(R.id.fragment_place, fr, "Main");
+			 }
+			 fragmentTransaction.commit();
+	}
+	@Override
+	public void onBackPressed() {
+
+		MainFragment fragment = (MainFragment)getSupportFragmentManager().findFragmentByTag("Main");
+		if (fragment instanceof MainFragment) {
+	        super.onBackPressed();
+	    } else {
+	    	FragmentManager fm = getSupportFragmentManager();
+			FragmentTransaction fragmentTransaction = fm.beginTransaction();
+			fragmentTransaction.replace(R.id.fragment_place, new MainFragment(), "Main");
+			fragmentTransaction.commit();
+	    }
+
 	}
 
 }

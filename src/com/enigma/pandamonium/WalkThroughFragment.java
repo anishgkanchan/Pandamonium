@@ -3,26 +3,33 @@ package com.enigma.pandamonium;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
+import android.animation.Animator;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.enigma.logic.AlphaLogic;
 
-public class WalkThroughActivity extends Activity{
+public class WalkThroughFragment extends Fragment{
 	GridView gridView;
 	List<CellState> list;
 	char[][] playerState;
@@ -39,27 +46,25 @@ public class WalkThroughActivity extends Activity{
 	int pScore[][] = new int[5][5];
 	RelativeLayout messageLayout;
 	TextView playerScore, opponentScore, txtTutorial, txtDescription, next, txtProgress;
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	
+	public View onCreateView(LayoutInflater inflater,
+			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		 View rootView = inflater.inflate(R.layout.fragment_walk_through, container, false);
+		
 		logic = new AlphaLogic();
-		super.onCreate(savedInstanceState);
-		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		setContentView(R.layout.activity_walk_through);
-		gridView = (GridView) findViewById(R.id.boardgrid);
-		playerScore = (TextView) findViewById(R.id.playerScore);
-		txtTutorial =(TextView) findViewById(R.id.tutorial);
-		txtDescription = (TextView)findViewById(R.id.desciption);
-		opponentScore = (TextView) findViewById(R.id.opponentScore);
+		gridView = (GridView) rootView.findViewById(R.id.boardgrid);
+		playerScore = (TextView) rootView.findViewById(R.id.playerScore);
+		txtTutorial =(TextView) rootView.findViewById(R.id.tutorial);
+		txtDescription = (TextView)rootView.findViewById(R.id.desciption);
+		opponentScore = (TextView) rootView.findViewById(R.id.opponentScore);
 		
 		initialize();
-		tv = (RelativeLayout)findViewById(R.id.help_layout);
-		layout = (RelativeLayout)findViewById(R.id.main_layout);
-		messageLayout = (RelativeLayout)findViewById(R.id.message);
-		next = (TextView)findViewById(R.id.next);
-		txtProgress = (TextView)findViewById(R.id.text_progress);
-		btnTutorial = (Button) findViewById(R.id.btn_tutorial);
+		tv = (RelativeLayout)rootView.findViewById(R.id.help_layout);
+		layout = (RelativeLayout)rootView.findViewById(R.id.main_layout);
+		messageLayout = (RelativeLayout)rootView.findViewById(R.id.message);
+		next = (TextView)rootView.findViewById(R.id.next);
+		txtProgress = (TextView)rootView.findViewById(R.id.text_progress);
+		btnTutorial = (Button) rootView.findViewById(R.id.btn_tutorial);
 		btnTutorial.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -74,6 +79,7 @@ public class WalkThroughActivity extends Activity{
 					animation.setDuration(500);
 					animation.setStartOffset(500);
 					animation.setFillAfter(true);
+					
 					layout.startAnimation(animation);
 					level = 1;
 				}
@@ -84,12 +90,25 @@ public class WalkThroughActivity extends Activity{
 			
 			@Override
 			public void onClick(View arg0) {
+				Log.e("", "Next is pressed");
 				if(messageVisible) 
 				{
 					messageVisible = false;
 					animation = new AlphaAnimation(1.0f, 0.0f);
 					animation.setDuration(1000);
 					animation.setFillAfter(true);
+					animation.setAnimationListener(new AnimationListener(){
+						@Override
+						public void onAnimationEnd(Animation arg0) {
+							Log.e("", "Reachable?");
+							messageLayout.setVisibility(View.GONE);
+							messageLayout.clearAnimation();
+							next.clearAnimation();
+						}
+						@Override public void onAnimationRepeat(Animation animation) {}
+						@Override public void onAnimationStart(Animation animation) {}
+						
+					});
 					messageLayout.startAnimation(animation);
 					if(level==1){
 						CellState object = new CellState();
@@ -178,7 +197,13 @@ public class WalkThroughActivity extends Activity{
 						object1.setImage(R.drawable.blink1);
 						list.set(12, object1);
 					}else if(level == 4){
-						WalkThroughActivity.this.finish();
+						SharedPreferences.Editor editor = getActivity().getSharedPreferences("Shared Preference", Context.MODE_PRIVATE).edit();
+							editor.putInt(getString(R.string.first_time),1);
+							editor.commit();
+							FragmentManager fm = getActivity().getSupportFragmentManager();
+							FragmentTransaction fragmentTransaction = fm.beginTransaction();
+							fragmentTransaction.replace(R.id.fragment_place, new MainFragment(), "Main");
+							fragmentTransaction.commit();
 					}
 				}
 			}
@@ -209,6 +234,7 @@ public class WalkThroughActivity extends Activity{
 					playerScore.setText(p1);
 					opponentScore.setText(p2);
 					txtProgress.setText("Well Done!!");
+					messageLayout.setVisibility(View.INVISIBLE);
 					animation = new AlphaAnimation(0.0f, 1.0f);
 					animation.setDuration(1000);
 					animation.setFillAfter(true);
@@ -239,6 +265,7 @@ public class WalkThroughActivity extends Activity{
 					playerScore.setText(p1);
 					opponentScore.setText(p2);
 					txtProgress.setText("Woohhooo!! No more enemy Pandas there.");
+					messageLayout.setVisibility(View.INVISIBLE);
 					animation = new AlphaAnimation(0.0f, 1.0f);
 					animation.setDuration(1000);
 					animation.setFillAfter(true);
@@ -263,7 +290,8 @@ public class WalkThroughActivity extends Activity{
 											'X'));
 					playerScore.setText(p1);
 					opponentScore.setText(p2);
-					txtProgress.setText("It's not always possible to capture enemy Pandas but you know that now!");
+					txtProgress.setText("It's not always possible to capture enemy Pandas, but you know that now!");
+					messageLayout.setVisibility(View.INVISIBLE);
 					animation = new AlphaAnimation(0.0f, 1.0f);
 					animation.setDuration(1000);
 					animation.setFillAfter(true);
@@ -298,8 +326,9 @@ public class WalkThroughActivity extends Activity{
 											'X'));
 					playerScore.setText(p1);
 					opponentScore.setText(p2);
-					txtProgress.setText("Finally remember your objective is to increase the score, not to increase the tiles you capture");
+					txtProgress.setText("Finally, remember that your objective is to increase the score, and not to increase the tiles you capture.");
 					next.setText("Done");
+					messageLayout.setVisibility(View.INVISIBLE);
 					animation = new AlphaAnimation(0.0f, 1.0f);
 					animation.setDuration(1000);
 					animation.setFillAfter(true);
@@ -310,8 +339,8 @@ public class WalkThroughActivity extends Activity{
 				
 			}
 		});
+	    return rootView;
 	}
-	
 	void initialize(){
 		list = new ArrayList<CellState>();
 		Resources res = getResources();
@@ -335,7 +364,7 @@ public class WalkThroughActivity extends Activity{
 				{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' },
 				{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' } };
 		playable = true;
-		adapter = new GridViewAdapter(this, R.layout.griditem_layout, list);
+		adapter = new GridViewAdapter(getActivity(), R.layout.griditem_layout, list);
 		gridView.setAdapter(adapter);
 	}
 }

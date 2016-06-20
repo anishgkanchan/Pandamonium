@@ -1,49 +1,12 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/back_skin"
     tools:context="com.enigma.pandamonium.MainActivity" >
-	
-    <ImageView 
-        android:id="@+id/img_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/title"/>
-    
-    <ImageView 
-        android:id="@+id/img_video"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="30dp"
-        android:layout_gravity="center_horizontal"
-        android:src="@anim/start_screen_video"/>
-    
-    
-    
-    <Button 
-        android:id="@+id/btn_how2play"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/buttonselector"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="15dp"
-        android:text="How to Play"/>
-    
-  	<Button 
-        android:id="@+id/btn_play"
-        android:layout_width="match_parent"
-        android:background="@drawable/buttonselector"
-        android:layout_height="50dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:text="Play"
-        />
 
-</LinearLayout>
+    <FrameLayout
+        android:id="@+id/fragment_place"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

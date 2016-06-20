@@ -14,13 +14,6 @@ public class PandamoniumApplication extends Application{
 		 sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 	}
 	
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		Intent intent = new Intent(getApplicationContext(), WalkThroughActivity.class);
-		startActivity(intent);
-		
-	}
 	public static Object getSharedPrefs(String variable){
 		return variable;
 		
