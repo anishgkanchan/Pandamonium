@@ -100,9 +100,19 @@ public class GridViewAdapter extends BaseAdapter {
 					 }
 				 }));
 		}
+		else if(item.getImage()==R.drawable.blink1){
+			final AnimationDrawable blink = (AnimationDrawable)res.getDrawable(R.anim.anim_blink);
+			((Activity)context).runOnUiThread(new Thread(new Runnable() {
+				 public void run() {
+					holder.image.setImageDrawable(blink);
+					blink.start();
+					 }
+				 }));
+		}
 		else {
 			holder.image.setImageDrawable(null);
 		}
+		
 		return row;
 	}
 }

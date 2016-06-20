@@ -13,7 +13,9 @@ import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,11 +29,14 @@ public class WalkThroughActivity extends Activity{
 	AlphaLogic logic;
 	GridViewAdapter adapter;
 	AlphaAnimation animation;
+	RelativeLayout layout;
+	RelativeLayout tv;
+	Button btnTutorial;
 	boolean playable;
 	int level = 1;
 	int pScore[][] = new int[5][5];
 	RelativeLayout messageLayout;
-	TextView playerScore, opponentScore, txtTutorial, txtDescription, next;
+	TextView playerScore, opponentScore, txtTutorial, txtDescription, next, txtProgress;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		logic = new AlphaLogic();
@@ -45,21 +50,31 @@ public class WalkThroughActivity extends Activity{
 		txtTutorial =(TextView) findViewById(R.id.tutorial);
 		txtDescription = (TextView)findViewById(R.id.desciption);
 		opponentScore = (TextView) findViewById(R.id.opponentScore);
+		
 		initialize();
-		animation = new AlphaAnimation(1.0f, 0.0f);
-		TextView tv = (TextView)findViewById(R.id.hello);
-		animation.setDuration(1000);
-		animation.setStartOffset(1000);
-		animation.setFillAfter(true);
-		tv.startAnimation(animation);
-		animation = new AlphaAnimation(0.0f, 1.0f);
-		animation.setDuration(1000);
-		animation.setStartOffset(3000);
-		animation.setFillAfter(true);
-		RelativeLayout layout = (RelativeLayout)findViewById(R.id.main_layout);
-		layout.startAnimation(animation);
+		tv = (RelativeLayout)findViewById(R.id.help_layout);
+		layout = (RelativeLayout)findViewById(R.id.main_layout);
 		messageLayout = (RelativeLayout)findViewById(R.id.message);
 		next = (TextView)findViewById(R.id.next);
+		txtProgress = (TextView)findViewById(R.id.text_progress);
+		btnTutorial = (Button) findViewById(R.id.btn_tutorial);
+		btnTutorial.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				animation = new AlphaAnimation(1.0f, 0.0f);
+				animation.setDuration(500);
+				animation.setStartOffset(500);
+				animation.setFillAfter(true);
+				tv.startAnimation(animation);
+				animation = new AlphaAnimation(0.0f, 1.0f);
+				animation.setDuration(500);
+				animation.setStartOffset(500);
+				animation.setFillAfter(true);
+				layout.startAnimation(animation);
+				
+			}
+		});
 		next.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -88,9 +103,12 @@ public class WalkThroughActivity extends Activity{
 											'X'));
 					playerScore.setText(p1);
 					opponentScore.setText(p2);
-					txtTutorial.setText("Tutorial 2/5");
+					txtTutorial.setText("Tutorial 2/4");
 					txtDescription.setText("Capture the enemy panda by playing at the tile adjacent to your panda");
 					level+=1;
+					CellState object1 = list.get(16);
+					object1.setImage(R.drawable.blink1);
+					list.set(16, object1);
 				}else if(level ==2){
 					initialize();
 					CellState object = new CellState();
@@ -117,8 +135,11 @@ public class WalkThroughActivity extends Activity{
 					playerScore.setText(p1);
 					opponentScore.setText(p2);
 					level+=1;
-					txtTutorial.setText("Tutorial 3/5");
+					txtTutorial.setText("Tutorial 3/4");
 					txtDescription.setText("You can't capture enemy Panda's if you don't have your own Panda adjacent to your next move.");
+					CellState object1 = list.get(12);
+					object1.setImage(R.drawable.blink1);
+					list.set(12, object1);
 				}else if(level == 3){
 					CellState object = new CellState();
 					object.setImage(0);
@@ -144,8 +165,13 @@ public class WalkThroughActivity extends Activity{
 					playerScore.setText(p1);
 					opponentScore.setText(p2);
 					level+=1;
-					txtTutorial.setText("Tutorial 4/5");
-					txtDescription.setText("However if you do have your own panda next to your next move, you can capture enemy Panda's");
+					txtTutorial.setText("Tutorial 4/4");
+					txtDescription.setText("However if you do have your own panda next to your next move, you can capture enemy Pandas");
+					CellState object1 = list.get(12);
+					object1.setImage(R.drawable.blink1);
+					list.set(12, object1);
+				}else if(level == 4){
+					WalkThroughActivity.this.finish();
 				}
 			}
 		});
@@ -172,6 +198,7 @@ public class WalkThroughActivity extends Activity{
 											'X'));
 					playerScore.setText(p1);
 					opponentScore.setText(p2);
+					txtProgress.setText("Well Done!!");
 					animation = new AlphaAnimation(0.0f, 1.0f);
 					animation.setDuration(1000);
 					animation.setFillAfter(true);
@@ -200,6 +227,7 @@ public class WalkThroughActivity extends Activity{
 											'X'));
 					playerScore.setText(p1);
 					opponentScore.setText(p2);
+					txtProgress.setText("Woohhooo!! No more enemy Panda's there.");
 					animation = new AlphaAnimation(0.0f, 1.0f);
 					animation.setDuration(1000);
 					animation.setFillAfter(true);
@@ -223,6 +251,7 @@ public class WalkThroughActivity extends Activity{
 											'X'));
 					playerScore.setText(p1);
 					opponentScore.setText(p2);
+					txtProgress.setText("It's not always possible to capture enemy Panda's but you know that now!");
 					animation = new AlphaAnimation(0.0f, 1.0f);
 					animation.setDuration(1000);
 					animation.setFillAfter(true);
@@ -256,6 +285,8 @@ public class WalkThroughActivity extends Activity{
 											'X'));
 					playerScore.setText(p1);
 					opponentScore.setText(p2);
+					txtProgress.setText("Finally remember your objective is to increase the score, not to increase the tiles you capture");
+					next.setText("Done");
 					animation = new AlphaAnimation(0.0f, 1.0f);
 					animation.setDuration(1000);
 					animation.setFillAfter(true);
@@ -280,6 +311,9 @@ public class WalkThroughActivity extends Activity{
 		for (int i = 0; i < 25; i++) {
 			CellState gridData = new CellState();
 			gridData.setImage(0);
+			if(i == 17){
+				gridData.setImage(R.drawable.blink1);
+			}
 			gridData.setScore(Scores[i]);
 			list.add(gridData);
 			pScore[i / 5][i % 5] = gridData.getScore();
