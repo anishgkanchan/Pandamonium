@@ -57,11 +57,15 @@ public class GameScreenActivity extends Activity {
 	GridViewAdapter adapter;
 	AlertDialog.Builder alertDialogBuilder;
 	List<CellState> list;
+	boolean gameBegan = false;
 	List<CellState> prevList;
 	Resources res; 
 	
 	@Override
 	public void onBackPressed() {
+		if(!gameBegan)
+			super.onBackPressed();
+		else{
 		v = View.inflate(GameScreenActivity.this, R.layout.dialog, null);
 		v.setBackgroundResource(R.drawable.defeat_panda);
 		TextView title = (TextView)v.findViewById(R.id.title);
@@ -92,7 +96,7 @@ public class GameScreenActivity extends Activity {
 		alertDialogBuilder.setView(v);
 		dialog = alertDialogBuilder.create();
 		dialog.show();
-				
+		}
 		
 	}
 	protected void gameEndSave(boolean lost) {
@@ -315,6 +319,7 @@ public class GameScreenActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				gameBegan = true;
 				if(playerState[position/5][position%5]=='*'){
 				if (singleplayer) {
 					imgAnimTop.post(
