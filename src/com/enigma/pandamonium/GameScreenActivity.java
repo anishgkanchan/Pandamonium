@@ -255,9 +255,7 @@ public class GameScreenActivity extends Activity {
 		gridView = (GridView) findViewById(R.id.boardgrid);
 		playerScore = (TextView) findViewById(R.id.playerScore);
 		opponentScore = (TextView) findViewById(R.id.opponentScore);
-		undoImageView = (ImageView) findViewById(R.id.undo_button);
-		if(!singleplayer)
-			undoImageView.setVisibility(View.GONE);
+		undoImageView = (ImageView) findViewById(R.id.undo_button);;
 		imgAnimTop = (ImageView) findViewById(R.id.bg_anim_top);
 		imgAnimBottom = (ImageView) findViewById(R.id.bg_anim_bottom);
 		//Resources res = getResources();
@@ -267,7 +265,13 @@ public class GameScreenActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				boolean same  = true;
-				if (playable) {
+				if(!singleplayer){
+					if(player1)
+						player1 = false;
+					else
+						player1 = true;
+				}
+				if (playable || !singleplayer) {
 					for (int i = 0; i < 5; i++) {
 						for (int j = 0; j < 5; j++) {
 							if(playerState[i][j] != oldPlayerState[i][j])
@@ -277,12 +281,17 @@ public class GameScreenActivity extends Activity {
 					}
 					if(same){
 						Toast.makeText(GameScreenActivity.this, "You can only undo 1 move at a time.", Toast.LENGTH_SHORT).show();
-						movesPlayed += 2;
+						if(!singleplayer)
+							movesPlayed+=1;
+						else
+							movesPlayed += 2;
 					}
 					copyStuff(list, prevList);
 					adapter.notifyDataSetChanged();
-					movesPlayed -= 2;
-
+					if(!singleplayer)
+						movesPlayed-=1;
+					else
+						movesPlayed -= 2;
 					Runnable r1 = new Runnable() {
 
 						@Override
@@ -444,7 +453,12 @@ public class GameScreenActivity extends Activity {
 						}
 					}
 				} else {
-					
+					for (int i = 0; i < 5; i++) {
+						for (int j = 0; j < 5; j++) {
+							oldPlayerState[i][j] = playerState[i][j];
+						}
+					}
+					copyStuff(prevList, list);
 					char player;
 					int playerImage;
 					if (player1) {
