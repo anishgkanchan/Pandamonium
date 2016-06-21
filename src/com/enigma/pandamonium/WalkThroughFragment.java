@@ -192,7 +192,7 @@ public class WalkThroughFragment extends Fragment{
 						opponentScore.setText(p2);
 						level+=1;
 						txtTutorial.setText("Tutorial 4/4");
-						txtDescription.setText("However if you do have your own panda next to your next move, you can capture enemy Pandas");
+						txtDescription.setText("However, if you do have your own panda adjacent to your next move, you can capture enemy Pandas");
 						CellState object1 = list.get(12);
 						object1.setImage(R.drawable.blink1);
 						list.set(12, object1);

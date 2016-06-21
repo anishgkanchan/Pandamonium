@@ -139,12 +139,14 @@ android:layout_centerHorizontal="true"
         android:id="@+id/message"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:padding="20dp"
         android:layout_gravity="center"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="#ffffff"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:background="@drawable/help_dialog"
         android:visibility="invisible"
-        tools:context="com.enigma.pandamonium.WalkThroughFragment" >
+        tools:context="com.enigma.pandamonium.WalkThroughFragment"
+        android:elevation="10dp" >
 
         <TextView
             android:id="@+id/text_progress"
@@ -164,8 +166,9 @@ android:layout_centerHorizontal="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
-            android:background="@color/light_brown"
+            android:background="@drawable/tut_btn_selector"
             android:padding="10dp"
+            
             android:text="Next" />
     </RelativeLayout>
 
