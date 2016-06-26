@@ -36,6 +36,11 @@
     <string name="help">The battle has begun, the Evil Pandas are trying to capture territories with the most Fubla (the magical substance that gives all Pandas their secret Kung-Fu powers). You however, the all knowing Dragon Warrior can stop them with your inner peace and logic skills. Your mission, if you choose to accept is to capture the territories with the highest Fubla Counts and finally have dominion over the Evil Pandas. Fight On.  </string>
     <string name="title_activity_main_real">MainActivity</string>
      <string name="first_time">First</string>
+     <string name="APP_ID">253546665020541</string>
+     <string name="error">Error</string>
+     <string name="success">Success</string>
+     <string name="successfully_posted_post">Successfully_posted_post</string>
+     <string name="ok">Ok</string>
     
 
 </resources>
