@@ -41,5 +41,16 @@
         android:background="@drawable/buttonselector"
         android:layout_toRightOf="@+id/btn_no"
         android:text="Yes" />
+     <Button
+       android:id="@+id/postStatusUpdateButton"
+       android:layout_width="115dp"
+       android:layout_height="wrap_content"
+       android:text="Share"
+       android:textColor="#ffffff"
+       android:background="#3b5998"
+       android:layout_below="@+id/btn_yes"
+       android:layout_marginTop="10dp"
+        android:layout_alignLeft="@+id/message"
+       />
 
 </RelativeLayout>

@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +18,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -30,6 +33,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.enigma.logic.AlphaLogic;
+import com.facebook.*;
+import com.facebook.login.widget.ProfilePictureView;
+import com.facebook.share.ShareApi;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
 
 
 public class GameScreenActivity extends Activity {
@@ -59,8 +72,54 @@ public class GameScreenActivity extends Activity {
 	List<CellState> list;
 	boolean gameBegan = false;
 	List<CellState> prevList;
-	Resources res; 
+	Resources res;
 	
+	private final String PENDING_ACTION_BUNDLE_KEY =
+            "com.example.hellofacebook:PendingAction";
+
+    private Button postStatusUpdateButton;
+    private PendingAction pendingAction = PendingAction.NONE;
+    private boolean canPresentShareDialog;
+    private CallbackManager callbackManager;
+    private ShareDialog shareDialog;
+    private FacebookCallback<Sharer.Result> shareCallback = new FacebookCallback<Sharer.Result>() {
+    	@Override
+        public void onCancel() {
+            Log.d("HelloFacebook", "Canceled");
+        }
+
+        @Override
+        public void onError(FacebookException error) {
+            Log.d("HelloFacebook", String.format("Error: %s", error.toString()));
+            String title = getString(R.string.error);
+            String alertMessage = error.getMessage();
+            showResult(title, alertMessage);
+        }
+
+        @Override
+        public void onSuccess(Sharer.Result result) {
+            Log.d("HelloFacebook", "Success!");
+            if (result.getPostId() != null) {
+                String title = getString(R.string.success);
+                String id = result.getPostId();
+                String alertMessage = getString(R.string.successfully_posted_post, id);
+                showResult(title, alertMessage);
+            }
+        }
+
+        private void showResult(String title, String alertMessage) {
+            new AlertDialog.Builder(GameScreenActivity.this)
+                    .setTitle(title)
+                    .setMessage(alertMessage)
+                    .setPositiveButton(R.string.ok, null)
+                    .show();
+        }
+    };
+    private enum PendingAction {
+        NONE,
+        POST_PHOTO,
+        POST_STATUS_UPDATE
+    }
 	@Override
 	public void onBackPressed() {
 		if(!gameBegan)
@@ -242,6 +301,21 @@ public class GameScreenActivity extends Activity {
 		logic = new AlphaLogic();
 		singleplayer = getIntent().getBooleanExtra("single_player", true);
 		difficulty = getIntent().getIntExtra("difficulty", 1);
+		
+		FacebookSdk.sdkInitialize(this.getApplicationContext());
+		callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
+        shareDialog.registerCallback(
+                callbackManager,
+                shareCallback);
+        if (savedInstanceState != null) {
+            String name = savedInstanceState.getString(PENDING_ACTION_BUNDLE_KEY);
+            pendingAction = PendingAction.valueOf(name);
+        }
+       
+        canPresentShareDialog = ShareDialog.canShow(
+                ShareLinkContent.class);
+
 
 		res = getResources(); 
 
@@ -397,6 +471,14 @@ public class GameScreenActivity extends Activity {
 							boolean lost = logic.getScore(pScore, playerState, 'X') > logic.getScore(pScore, playerState, 'O');
 							gameEndSave(lost);
 							v = View.inflate(GameScreenActivity.this, R.layout.dialog, null);
+
+							 postStatusUpdateButton = (Button) v.findViewById(R.id.postStatusUpdateButton);
+						        postStatusUpdateButton.setOnClickListener(new View.OnClickListener() {
+						            public void onClick(View view) {
+						                onClickPostStatusUpdate();
+						            }
+						        });
+						        
 							TextView title = (TextView)v.findViewById(R.id.title);
 							TextView message = (TextView)v.findViewById(R.id.message);
 							Button btnYes = (Button)v.findViewById(R.id.btn_yes);
@@ -551,6 +633,7 @@ public class GameScreenActivity extends Activity {
 						TextView message = (TextView)v.findViewById(R.id.message);
 						Button btnYes = (Button)v.findViewById(R.id.btn_yes);
 						Button btnNo = (Button)v.findViewById(R.id.btn_no);
+						
 						btnNo.setOnClickListener(new OnClickListener() {
 							
 							@Override
@@ -604,6 +687,71 @@ public class GameScreenActivity extends Activity {
 		});
 		gridView.setAdapter(adapter);
 	}
+	
+	private void onClickPostStatusUpdate() {
+        performPublish(PendingAction.POST_STATUS_UPDATE, canPresentShareDialog);
+    }
+	private void postStatusUpdate() {
+        Profile profile = Profile.getCurrentProfile();
+        ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                .setContentTitle("PANDA")
+                .setContentDescription(
+                        "PANDAMONIUM IS BEST")
+                .setContentUrl(Uri.parse("https://play.google.com/apps/testing/com.enigma.pandamonium"))
+                .build();
+        if (canPresentShareDialog) {
+            shareDialog.show(linkContent);
+        } else if (profile != null && hasPublishPermission()) {
+            ShareApi.share(linkContent, shareCallback);
+        } else {
+            pendingAction = PendingAction.POST_STATUS_UPDATE;
+        }
+    }
+	private boolean hasPublishPermission() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null && accessToken.getPermissions().contains("publish_actions");
+    }
+	private void handlePendingAction() {
+        PendingAction previouslyPendingAction = pendingAction;
+        // These actions may re-set pendingAction if they are still pending, but we assume they
+        // will succeed.
+        pendingAction = PendingAction.NONE;
+
+        switch (previouslyPendingAction) {
+            case NONE:
+                break;
+            case POST_STATUS_UPDATE:
+                postStatusUpdate();
+                break;
+        }
+    }
+
+	private void performPublish(PendingAction action, boolean allowNoToken) {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if (accessToken != null || allowNoToken) {
+            pendingAction = action;
+            handlePendingAction();
+        }
+    }
+
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
 
 	void copyStuff(List<CellState> dest, List<CellState> source) {
 		for (int i = 0; i < source.size(); i++) {
