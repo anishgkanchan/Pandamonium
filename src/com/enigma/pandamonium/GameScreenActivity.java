@@ -75,7 +75,7 @@ public class GameScreenActivity extends Activity {
 	private final String PENDING_ACTION_BUNDLE_KEY =
             "com.example.hellofacebook:PendingAction";
 
-    private Button postStatusUpdateButton;
+    private ImageView postStatusUpdateButton;
     private PendingAction pendingAction = PendingAction.NONE;
     private boolean canPresentShareDialog;
     private CallbackManager callbackManager;
@@ -470,7 +470,7 @@ public class GameScreenActivity extends Activity {
 							gameEndSave(lost);
 							v = View.inflate(GameScreenActivity.this, R.layout.dialog, null);
 
-							 postStatusUpdateButton = (Button) v.findViewById(R.id.postStatusUpdateButton);
+							 postStatusUpdateButton = (ImageView) v.findViewById(R.id.postStatusUpdateButton);
 						        postStatusUpdateButton.setOnClickListener(new View.OnClickListener() {
 						            public void onClick(View view) {
 						                onClickPostStatusUpdate();
