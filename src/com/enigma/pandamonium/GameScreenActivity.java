@@ -471,6 +471,7 @@ public class GameScreenActivity extends Activity {
 							v = View.inflate(GameScreenActivity.this, R.layout.dialog, null);
 
 							 postStatusUpdateButton = (ImageView) v.findViewById(R.id.postStatusUpdateButton);
+							 postStatusUpdateButton.setVisibility(View.VISIBLE);
 						        postStatusUpdateButton.setOnClickListener(new View.OnClickListener() {
 						            public void onClick(View view) {
 						                onClickPostStatusUpdate();
@@ -627,6 +628,16 @@ public class GameScreenActivity extends Activity {
 					{
 						boolean lost = logic.getScore(pScore, playerState, 'X') > logic.getScore(pScore, playerState, 'O');
 						v = View.inflate(GameScreenActivity.this, R.layout.dialog, null);
+						
+						 postStatusUpdateButton = (ImageView) v.findViewById(R.id.postStatusUpdateButton);
+						 postStatusUpdateButton.setVisibility(View.VISIBLE);
+					        postStatusUpdateButton.setOnClickListener(new View.OnClickListener() {
+					            public void onClick(View view) {
+					                onClickPostStatusUpdate();
+					            }
+					        });
+					     
+					        
 						TextView title = (TextView)v.findViewById(R.id.title);
 						TextView message = (TextView)v.findViewById(R.id.message);
 						Button btnYes = (Button)v.findViewById(R.id.btn_yes);
