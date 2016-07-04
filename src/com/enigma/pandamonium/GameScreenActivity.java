@@ -9,9 +9,11 @@ import java.util.Random;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -110,7 +112,7 @@ public class GameScreenActivity extends Activity {
     private boolean canPresentShareDialog;
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
-   
+	MediaPlayer mediaPlayer = null;
     private FacebookCallback<Sharer.Result> shareCallback = new FacebookCallback<Sharer.Result>() {
     	@Override
         public void onCancel() {
@@ -629,7 +631,19 @@ public class GameScreenActivity extends Activity {
             String name = savedInstanceState.getString(PENDING_ACTION_BUNDLE_KEY);
             pendingAction = PendingAction.valueOf(name);
         }
-       
+
+    	  mediaPlayer = MediaPlayer.create(this, R.raw.musicforpanda);
+    	  mediaPlayer.setLooping(true);
+    	  mediaPlayer.start();
+        //doBindService();
+        
+        //music
+        //Intent music = new Intent();
+        //music.setClass(this,MusicService.class);
+        //startService(music);
+        
+        //music ends
+        
         canPresentShareDialog = ShareDialog.canShow(
                 ShareLinkContent.class);
 
@@ -1212,7 +1226,17 @@ public class GameScreenActivity extends Activity {
 		   
 		 
 	   }
+	   private ServiceConnection serviceConnection = null;
+
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mediaPlayer.stop();
+	}
 }
 //300*200 hdpi
 //200*__ mdpi
 //150*__ ldpi
+//64207: request code
+//-1: result code

@@ -16,7 +16,6 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/AppTheme" >
-		<service android:name="MusicService" android:enabled="true"/>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
