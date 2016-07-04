@@ -3,6 +3,7 @@ package com.enigma.pandamonium;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,26 +12,42 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Options2Activity extends Activity {
 	private Button btnsPlayer;
 	private Button btnmPlayer;
 	private Button btnStats;
+	private Button btnAchievements;
+	SharedPreferences sharedPref;
 	private Context mContext;
 	private TextView txtDifficulty;
 	private String[] difficulty= new String[]{"Easy","Medium","Difficult","Expert"};
+	int lock;
 	int count = 0;
+	
+    @Override
+    protected void onResume() {
+    	// TODO Auto-generated method stub
+    	super.onResume();
+    	lock = sharedPref.getInt(getString(R.string.difficulty_lock),0);
+    }
+     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		sharedPref = this.getSharedPreferences("Shared Preference",Context.MODE_PRIVATE);
 		//Remove notification bar
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_options2);
 		mContext = this;
+		lock = sharedPref.getInt(getString(R.string.difficulty_lock),0);;
 		btnsPlayer = (Button) findViewById(R.id.singlePlayer);
 		btnmPlayer = (Button) findViewById(R.id.multiPlayer);
 		btnStats = (Button) findViewById(R.id.score);
+		btnAchievements = (Button) findViewById(R.id.achievements);
+		
 		final ImageView imgLeft = (ImageView) findViewById(R.id.lft_arrow);
 		final ImageView imgRight = (ImageView) findViewById(R.id.rght_arrow);
 		txtDifficulty = (TextView) findViewById(R.id.txt_dificulty);
@@ -55,10 +72,14 @@ public class Options2Activity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				imgLeft.setVisibility(View.VISIBLE);
+				if(lock != 0)
+					imgLeft.setVisibility(View.VISIBLE);
 				if(count<3){
+				if(count < lock){
 					count++;
 					txtDifficulty.setText(difficulty[count]);
+				}else
+					Toast.makeText(Options2Activity.this, "Clear "+difficulty[lock]+" first", Toast.LENGTH_SHORT).show();
 				}
 				if(count==3){
 					imgRight.setVisibility(View.INVISIBLE);
@@ -90,6 +111,13 @@ public class Options2Activity extends Activity {
 			public void onClick(View v) {
 				Intent i = new Intent(mContext, StatsActivity.class);
 				i.putExtra("single_player", false);
+				startActivity(i);
+			}
+		});
+		btnAchievements.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(mContext, AchievementActivity.class);
 				startActivity(i);
 			}
 		});
