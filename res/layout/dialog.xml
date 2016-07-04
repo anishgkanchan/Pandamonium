@@ -41,13 +41,12 @@
         android:background="@drawable/buttonselector"
         android:layout_toRightOf="@+id/btn_no"
         android:text="Yes" />
-     <Button
+     <ImageView
        android:id="@+id/postStatusUpdateButton"
-       android:layout_width="115dp"
-       android:layout_height="wrap_content"
-       android:text="Share"
-       android:textColor="#ffffff"
-       android:background="#3b5998"
+       android:layout_width="120dp"
+       android:layout_height="50dp"
+       android:src="@drawable/fbshare"
+       android:visibility="gone"
        android:layout_below="@+id/btn_yes"
        android:layout_marginTop="10dp"
         android:layout_alignLeft="@+id/message"

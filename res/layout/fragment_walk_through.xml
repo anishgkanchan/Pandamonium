@@ -8,17 +8,37 @@
         android:id="@+id/help_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/prologue"
         android:orientation="vertical"
         android:padding="20dp" >
 
         <ImageView
-            android:id="@+id/hello"
+            android:id="@+id/prologue_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentTop = "true"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/prologue_text" />
+            android:src="@drawable/prologue_title" />
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/btn_tutorial"
+            android:layout_below="@+id/prologue_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp" >
+
+            <TextView
+                android:id="@+id/hello"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/help"
+                android:textSize="20sp"
+                android:gravity="center_horizontal" />
+        </ScrollView>
 
         <Button
             android:id="@+id/btn_tutorial"
@@ -26,7 +46,7 @@
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="25dp"
+            android:layout_marginBottom="15dp"
             android:background="@drawable/buttonselector"
             android:text="Play Tutorial" />
     </RelativeLayout>

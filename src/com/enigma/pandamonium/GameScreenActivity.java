@@ -105,7 +105,7 @@ public class GameScreenActivity extends Activity {
 	private final String PENDING_ACTION_BUNDLE_KEY =
             "com.example.hellofacebook:PendingAction";
 
-    private Button postStatusUpdateButton;
+    private ImageView postStatusUpdateButton;
     private PendingAction pendingAction = PendingAction.NONE;
     private boolean canPresentShareDialog;
     private CallbackManager callbackManager;
@@ -798,7 +798,8 @@ public class GameScreenActivity extends Activity {
 							gameEndSave(lost);
 							v = View.inflate(GameScreenActivity.this, R.layout.dialog, null);
 
-							 postStatusUpdateButton = (Button) v.findViewById(R.id.postStatusUpdateButton);
+							 postStatusUpdateButton = (ImageView) v.findViewById(R.id.postStatusUpdateButton);
+							 postStatusUpdateButton.setVisibility(View.VISIBLE);
 						        postStatusUpdateButton.setOnClickListener(new View.OnClickListener() {
 						            public void onClick(View view) {
 						                onClickPostStatusUpdate();
@@ -955,6 +956,16 @@ public class GameScreenActivity extends Activity {
 					{
 						boolean lost = logic.getScore(pScore, playerState, 'X') > logic.getScore(pScore, playerState, 'O');
 						v = View.inflate(GameScreenActivity.this, R.layout.dialog, null);
+						
+						 postStatusUpdateButton = (ImageView) v.findViewById(R.id.postStatusUpdateButton);
+						 postStatusUpdateButton.setVisibility(View.VISIBLE);
+					        postStatusUpdateButton.setOnClickListener(new View.OnClickListener() {
+					            public void onClick(View view) {
+					                onClickPostStatusUpdate();
+					            }
+					        });
+					     
+					        
 						TextView title = (TextView)v.findViewById(R.id.title);
 						TextView message = (TextView)v.findViewById(R.id.message);
 						Button btnYes = (Button)v.findViewById(R.id.btn_yes);
