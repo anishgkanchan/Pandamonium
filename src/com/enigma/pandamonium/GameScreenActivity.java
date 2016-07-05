@@ -100,6 +100,8 @@ public class GameScreenActivity extends Activity {
 	boolean gameBegan = false;
 	List<CellState> prevList;
 	int capture = 0;
+
+	int sound = 1;
 	Resources res;
 	int achieveLock;
 	boolean audioFlag = true;
@@ -111,7 +113,8 @@ public class GameScreenActivity extends Activity {
     private boolean canPresentShareDialog;
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
-	MediaPlayer mediaPlayer = null;
+	MediaPlayer mediaPlayer1 = null;
+	MediaPlayer mediaPlayer2 = null;
 	float mpVol = 0.0f;
     
 	private FacebookCallback<Sharer.Result> shareCallback = new FacebookCallback<Sharer.Result>() {
@@ -633,40 +636,38 @@ public class GameScreenActivity extends Activity {
         }
 
         if(audioFlag){
-	    	  mediaPlayer = MediaPlayer.create(this, R.raw.musicforpanda);
-	    	  mediaPlayer.setVolume(mpVol, mpVol);
-	    	  mediaPlayer.setLooping(true);
-	    	  mediaPlayer.start();
+        	mpVol = 1;
+	    	  mediaPlayer1 = MediaPlayer.create(this, R.raw.musicforpanda);
+	    	  mediaPlayer1.setVolume(mpVol, mpVol);
+	    	  //mediaPlayer1.setLooping(true);
+	    	  mediaPlayer1.start();
+	    	 mediaPlayer2 = MediaPlayer.create(this, R.raw.musicforpanda);
+	    	 mediaPlayer2.setVolume(mpVol, mpVol);
 	    	 final Handler h = new Handler();
 	    	 h.post(new Runnable() {
-	    	     public void run() {
-	
-	    	    	double diff = mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition();
-	              	Log.i("","----"+diff+" inside handler");
-	    	             if (diff<=10000 && diff>=9000) {
-	    	            	 mpVol += .2f;
-	    	            	 mediaPlayer.setVolume(mpVol, mpVol);
-	    	                 h.postDelayed(this, 500);
-	    	                 Log.i("","---- increasing");
-	    	             }
-	    	             else if(diff<=1000 && diff>=0) {
-	    	            	 mpVol -= .2f;
-	    	            	 mediaPlayer.setVolume(mpVol, mpVol);
-	    	                 h.postDelayed(this, 500);
-	 	                 	 Log.i("","---- deccreasing");
-	    	             }
-	    	             else{
-	
-	  	                 	Log.i("","---- no change");
-	    	                h.postDelayed(this, 500);
-	    	             }
-	    	     }
-	    	 });
+				
+				@Override
+				public void run() {
+					if(sound==1){
+						double diff = mediaPlayer1.getDuration() - mediaPlayer1.getCurrentPosition();
+						  if (diff<=200 && diff>=0) {
+							  mediaPlayer1.stop();
+							  mediaPlayer2.start();
+							  sound = 2;
+						  }
+					} else{
+						double diff = mediaPlayer2.getDuration() - mediaPlayer2.getCurrentPosition();
+						  if (diff<=200 && diff>=0) {
+							  mediaPlayer2.stop();
+							  mediaPlayer1.start();
+							  sound = 1;
+						  }
+					}
+					 h.postDelayed(this, 150);
+				}
+			});
+	    	
         }
-    	 //if diff is between 10 and 7, increase
-    	 //if diff is between 3 and 0, decrease
-        //doBindService();
-        
         canPresentShareDialog = ShareDialog.canShow(
                 ShareLinkContent.class);
 
@@ -1254,7 +1255,8 @@ public class GameScreenActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		 if(audioFlag)
-			 mediaPlayer.stop();
+			 {mediaPlayer1.stop();
+			 mediaPlayer2.stop();}
 	}
 }
 //300*200 hdpi
