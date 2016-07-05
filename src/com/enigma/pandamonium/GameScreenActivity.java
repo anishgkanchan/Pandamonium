@@ -102,7 +102,7 @@ public class GameScreenActivity extends Activity {
 	boolean gameBegan = false;
 	List<CellState> prevList;
 	int capture = 0;
-
+	int newHighScore = 0;
 	int sound = 1;
 	Resources res;
 	int achieveLock;
@@ -116,8 +116,8 @@ public class GameScreenActivity extends Activity {
     private boolean canPresentShareDialog;
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
-	MediaPlayer mediaPlayer1 = null;
-	MediaPlayer mediaPlayer2 = null;
+	private MediaPlayer mediaPlayer1 = null;
+	private MediaPlayer mediaPlayer2 = null;
 	float mpVol = 0.0f;
     
 	private FacebookCallback<Sharer.Result> shareCallback = new FacebookCallback<Sharer.Result>() {
@@ -215,7 +215,7 @@ public class GameScreenActivity extends Activity {
 				lock = sharedPref.getInt(getString(R.string.difficulty_lock),0);
 				int currentStreak=0,maxStreak =0,totalGames = 0;
 				int wins=0;
-				int newHighScore = logic.getScore(pScore,
+				newHighScore = logic.getScore(pScore,
 						playerState, 'O');
 				if(singleplayer){
 					
@@ -1125,10 +1125,25 @@ public class GameScreenActivity extends Activity {
     }
 	private void postStatusUpdate() {
         Profile profile = Profile.getCurrentProfile();
+        String mode = "";
+        switch(difficulty){
+			case 1:
+				mode = "easy";
+				break;
+			case 2:
+				mode = "medium";
+				break;
+			case 3:
+				mode = "hard";
+				break;
+			case 4:
+				mode = "expert";
+		}
         ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                .setContentTitle("PANDA")
+                .setContentTitle("I just won a match in Pandamonium!")
                 .setContentDescription(
-                        "PANDAMONIUM IS BEST")
+                		
+                        "I defeated the evil pandas in the "+mode+" mode and scored "+newHighScore+".I challenge you to beat it!")
                 .setContentUrl(Uri.parse("https://play.google.com/apps/testing/com.enigma.pandamonium"))
                 .build();
         if (canPresentShareDialog) {
@@ -1319,8 +1334,19 @@ public class GameScreenActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		 if(audioFlag)
-			 {mediaPlayer1.stop();
-			 mediaPlayer2.stop();}
+		 {
+			 mediaPlayer1.stop();
+			 mediaPlayer2.stop();
+		 }
+	}
+	@Override
+	protected void onPause(){
+		super.onPause();
+		 if(audioFlag)
+		 {
+			 mediaPlayer1.stop();
+			 mediaPlayer2.stop();
+		 }
 	}
 }
 //300*200 hdpi

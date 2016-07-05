@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.enigma.pandamonium.AchievementActivity"
-    android:background="@color/dark_brown" >
+    android:background="@color/back_skin" >
 
     <TextView android:id="@+id/txt_title"
         android:layout_width="match_parent"
@@ -12,7 +12,10 @@
         android:text="Missions Accomplished"
         android:textSize="28sp"
         android:gravity="center"
-        android:layout_margin="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_weight="0"/>
     
     <ListView android:id="@+id/list_achievements"
