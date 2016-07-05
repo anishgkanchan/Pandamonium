@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -101,9 +102,12 @@ public class GameScreenActivity extends Activity {
 	boolean gameBegan = false;
 	List<CellState> prevList;
 	int capture = 0;
+
+	int sound = 1;
 	Resources res;
 	int achieveLock;
 	boolean fbShare;
+	boolean audioFlag = true;
 	private final String PENDING_ACTION_BUNDLE_KEY =
             "com.example.hellofacebook:PendingAction";
 
@@ -112,8 +116,11 @@ public class GameScreenActivity extends Activity {
     private boolean canPresentShareDialog;
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
-   
-    private FacebookCallback<Sharer.Result> shareCallback = new FacebookCallback<Sharer.Result>() {
+	MediaPlayer mediaPlayer1 = null;
+	MediaPlayer mediaPlayer2 = null;
+	float mpVol = 0.0f;
+    
+	private FacebookCallback<Sharer.Result> shareCallback = new FacebookCallback<Sharer.Result>() {
     	@Override
         public void onCancel() {
             Log.d("HelloFacebook", "Canceled");
@@ -184,7 +191,6 @@ public class GameScreenActivity extends Activity {
 			
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				dialog.dismiss();
 			}
 		});
@@ -672,7 +678,7 @@ public class GameScreenActivity extends Activity {
 		logic = new AlphaLogic();
 		singleplayer = getIntent().getBooleanExtra("single_player", true);
 		difficulty = getIntent().getIntExtra("difficulty", 1);
-		
+		audioFlag = getIntent().getBooleanExtra("audio", true);
 		FacebookSdk.sdkInitialize(this.getApplicationContext());
 		callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
@@ -683,7 +689,40 @@ public class GameScreenActivity extends Activity {
             String name = savedInstanceState.getString(PENDING_ACTION_BUNDLE_KEY);
             pendingAction = PendingAction.valueOf(name);
         }
-       
+
+        if(audioFlag){
+        	mpVol = 1;
+	    	  mediaPlayer1 = MediaPlayer.create(this, R.raw.musicforpanda);
+	    	  mediaPlayer1.setVolume(mpVol, mpVol);
+	    	  //mediaPlayer1.setLooping(true);
+	    	  mediaPlayer1.start();
+	    	 mediaPlayer2 = MediaPlayer.create(this, R.raw.musicforpanda);
+	    	 mediaPlayer2.setVolume(mpVol, mpVol);
+	    	 final Handler h = new Handler();
+	    	 h.post(new Runnable() {
+				
+				@Override
+				public void run() {
+					if(sound==1){
+						double diff = mediaPlayer1.getDuration() - mediaPlayer1.getCurrentPosition();
+						  if (diff<=200 && diff>=0) {
+							  mediaPlayer1.stop();
+							  mediaPlayer2.start();
+							  sound = 2;
+						  }
+					} else{
+						double diff = mediaPlayer2.getDuration() - mediaPlayer2.getCurrentPosition();
+						  if (diff<=200 && diff>=0) {
+							  mediaPlayer2.stop();
+							  mediaPlayer1.start();
+							  sound = 1;
+						  }
+					}
+					 h.postDelayed(this, 150);
+				}
+			});
+	    	
+        }
         canPresentShareDialog = ShareDialog.canShow(
                 ShareLinkContent.class);
 
@@ -1275,7 +1314,17 @@ public class GameScreenActivity extends Activity {
 		   
 		 
 	   }
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		 if(audioFlag)
+			 {mediaPlayer1.stop();
+			 mediaPlayer2.stop();}
+	}
 }
 //300*200 hdpi
 //200*__ mdpi
 //150*__ ldpi
+//64207: request code
+//-1: result code
