@@ -51,13 +51,13 @@ public class ListViewAdapter extends BaseAdapter {
 	public ListViewAdapter(Context context, int resourceId, List<AchieveState> list) {
 		sharedPref = context.getSharedPreferences("Shared Preference", Context.MODE_PRIVATE);
 		achievements =  sharedPref.getString(context.getString(R.string.achievements), "000000000000000000000");
-		achieveLock =  sharedPref.getInt(context.getString(R.string.locked_achievements), 3);
+		achieveLock =  sharedPref.getInt(context.getString(R.string.locked_achievements), 20);
 		this.context = context;
 		res = ((Activity)context).getResources();
 		layoutResourceId = resourceId;
 		mList = (ArrayList<AchieveState>) list;
 		mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		Log.i("TAG","--------"+mList);
+		Log.i("TAG","--------"+mList.size());
 	}
 	
 	class ViewHolder {
@@ -83,7 +83,7 @@ public class ListViewAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		
+		Log.i("achieve String",achievements+"");
 		View row = convertView;
 		ViewHolder temp = null;
 		if (row == null) {
@@ -98,14 +98,35 @@ public class ListViewAdapter extends BaseAdapter {
 			temp = (ViewHolder) row.getTag();
 		}
 		final ViewHolder holder = temp;
-		AchieveState item = mList.get(position);
-		if(position<=achieveLock && achievements.charAt(position)=='1'){
+		int pos = 0;
+		if(position == 0){
+			AchieveState item = mList.get(16);
+			if(achievements.charAt(16)=='1'){
+				holder.imageTitle.setText(item.getTitle());
+				holder.status.setText("Completed");
+				holder.status.setTextColor(res.getColor(R.color.light_green));
+				holder.status.setVisibility(View.VISIBLE);
+				holder.image.setImageDrawable(res.getDrawable(item.getImage()));
+			}else{
+				holder.imageTitle.setText(item.getTitle());
+				holder.status.setVisibility(View.VISIBLE);
+				holder.image.setImageDrawable(res.getDrawable(item.getImage()));
+			}
+		}else{
+		pos = position;
+		if(position<=16)
+			pos=position-1;
+		AchieveState item = mList.get(pos);
+		Log.i("position",position+"");
+		if(position<=achieveLock && achievements.charAt(pos)=='1'){
 			holder.imageTitle.setText(item.getTitle());
 			holder.status.setText("Completed");
 			holder.status.setTextColor(res.getColor(R.color.light_green));
 			holder.status.setVisibility(View.VISIBLE);
 			holder.image.setImageDrawable(res.getDrawable(item.getImage()));
-		}else if(position<=achieveLock && achievements.charAt(position)=='0'){
+		}else if(position<=achieveLock && achievements.charAt(pos)=='0'){
+			holder.status.setText("Incomplete");
+			holder.status.setTextColor(res.getColor(R.color.red));
 			holder.imageTitle.setText(item.getTitle());
 			holder.status.setVisibility(View.VISIBLE);
 			holder.image.setImageDrawable(res.getDrawable(item.getImage()));
@@ -113,6 +134,8 @@ public class ListViewAdapter extends BaseAdapter {
 			holder.imageTitle.setText("Locked");
 			holder.status.setVisibility(View.INVISIBLE);
 			holder.image.setImageDrawable(res.getDrawable(R.drawable.question));
+			
+		}
 		}
 		return row;
 	}

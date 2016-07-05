@@ -3,12 +3,14 @@ package com.enigma.pandamonium;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.AnimationDrawable;
@@ -101,7 +103,7 @@ public class GameScreenActivity extends Activity {
 	int capture = 0;
 	Resources res;
 	int achieveLock;
-	
+	boolean fbShare;
 	private final String PENDING_ACTION_BUNDLE_KEY =
             "com.example.hellofacebook:PendingAction";
 
@@ -128,11 +130,21 @@ public class GameScreenActivity extends Activity {
         @Override
         public void onSuccess(Sharer.Result result) {
             Log.d("HelloFacebook", "Success!");
+            String achieve =  sharedPref.getString(getString(R.string.achievements), achievements);
+			if(achieve.charAt(16)=='0'){
+				SharedPreferences.Editor editor = sharedPref.edit();
+				editor.putString(getString(R.string.achievements),  achieve.substring(0,16)+'1'+achieve.substring(17));
+				achieveLock++;
+				editor.putInt(getString(R.string.locked_achievements), achieveLock);
+				editor.commit();
+				
+			}
             if (result.getPostId() != null) {
                 String title = getString(R.string.success);
                 String id = result.getPostId();
                 String alertMessage = getString(R.string.successfully_posted_post, id);
                 showResult(title, alertMessage);
+            	
             }
         }
 
@@ -203,6 +215,8 @@ public class GameScreenActivity extends Activity {
 					
 
 				Log.i("Achieve lock Value",achieveLock+"------------BEFORE SWITCH---------------");
+				
+				
 				// Statistical Calculations
 				switch (difficulty) {
 				case 1:
@@ -213,89 +227,96 @@ public class GameScreenActivity extends Activity {
 						editor.putInt(getString(R.string.easy_high_score),newHighScore);
 						editor.commit();
 					}
+					String easyAchievements = sharedPref.getString(getString(R.string.achievements), achievements);
 					if(!lost){
 						maxStreak = sharedPref.getInt(getString(R.string.Maxestreak), 0);
 						currentStreak = sharedPref.getInt(getString(R.string.estreak), 0);
 						currentStreak++;
-						
-						wins = sharedPref.getInt(getString(R.string.eWins), 0);
 						SharedPreferences.Editor editor = sharedPref.edit();
 						editor.putInt(getString(R.string.eWins),wins+1);
 						editor.commit();
-						String easyAchievements =  sharedPref.getString(getString(R.string.achievements), achievements);
+						wins = sharedPref.getInt(getString(R.string.eWins), 0);
 						int easyIndices[] = {0,1,2,3,18,20};
 						for (int i:easyIndices){
+							easyAchievements =  sharedPref.getString(getString(R.string.achievements), achievements);
 							if(easyAchievements.charAt(i)!='1'){
 								editor = sharedPref.edit();
 								switch(i){
 								
 									case 0://50 games in easy
-										if(wins==50){
+										if(wins>=1 && easyAchievements.charAt(0)=='0'){
 											editor.putString(getString(R.string.achievements),  '1'+easyAchievements.substring(1));
 											editor.commit();
+											Log.i("craps=====",sharedPref.getString(getString(R.string.achievements), achievements));
 											achieveLock++;
+											System.out.println(0);
 										}
 										break;
 									case 1:
-										
+										System.out.println("BlaBLabefore"+sharedPref.getString(getString(R.string.achievements), achievements));
 										//250 captures easy
-										if(captures+capture>=250){
-											editor.putString(getString(R.string.achievements),  easyAchievements.charAt(0)+'1'+easyAchievements.substring(2));
+										if(captures+capture>=5 && easyAchievements.charAt(1)=='0'){
+											editor.putString(getString(R.string.achievements),  easyAchievements.substring(0,1)+'1'+easyAchievements.substring(2));
 											editor.commit();
 											achieveLock++;
+											System.out.println("BlaBLa"+sharedPref.getString(getString(R.string.achievements), achievements));
+											System.out.println(1);
 										}
-										Log.i("", achieveLock+"-----easy case 2--Streak 15 easy--");
 										break;
 									case 2://Streak 15 easy
-										if(currentStreak==15){
+										if(currentStreak>=1 && easyAchievements.charAt(2)=='0'){
 												editor.putString(getString(R.string.achievements),  easyAchievements.substring(0,2)+'1'+easyAchievements.substring(3));
 												editor.commit();
 												achieveLock++;
+												System.out.println(2);
 											}
-										Log.i("", achieveLock+"-----easy case 2--Streak 15 easy--");
 										break;
 									case 3:
 										//Make 1000 points in Easy
-										if(newHighScore>=1000){
+										if(newHighScore>=1000 && easyAchievements.charAt(3)=='0'){
 											editor.putString( getString(R.string.achievements),  easyAchievements.substring(0,3)+'1'+ easyAchievements.substring(4));
 											editor.commit();
+											System.out.println("achievelock before updation"+ achieveLock+"+++");
 											achieveLock++;
+											
 										}
-										
-										Log.i("", achieveLock+"-----easy case 3--1000 points--");
+									
 										break;
 								
 									case 18://Complete a game without capturing enemy and making 100
-										if(!globalCaptFlag && newHighScore>100 && achieveLock>=18){
-											editor.putString(getString(R.string.achievements),  easyAchievements.substring(0,18)+'1'+easyAchievements.substring(19));
-											editor.commit();
-											achieveLock++;
-										}
+//										if(!globalCaptFlag && newHighScore>100 && achieveLock>=18){
+//											editor.putString(getString(R.string.achievements),  easyAchievements.substring(0,18)+'1'+easyAchievements.substring(19));
+//											editor.commit();
+//											achieveLock++;
+//										}
 										break;
 									case 20:
-										if(achieveLock<20)
+										if(achieveLock<20 || easyAchievements.charAt(20)=='1')
 											break;
 										//Panda slayer
 										boolean flag = true;
-										nishant:	for (int p=0;p<5;p++){
+										for(int l=0;l<5;l++)
+											System.out.println(Arrays.toString(playerState[l]));
+											for (int p=0;p<5;p++){
 												for(int q=0;q<5;q++){
-													if(playerState[p][q]!='O')
+													if(playerState[p][q] == 'X')
 													{
 														flag = false;
-														break nishant;
 													}
 												}
-												if(flag){
+											}
+											if(flag){
 													editor.putString(getString(R.string.achievements),  easyAchievements.substring(0,20)+'1');
 													editor.commit();
 													achieveLock++;
 												}
-											}
+										System.out.println(sharedPref.getString(getString(R.string.achievements),"00"));
 								}
 							}
 						}
-
+						
 						editor = sharedPref.edit();
+						
 						if(currentStreak>maxStreak){
 							editor.putInt(getString(R.string.Maxestreak),currentStreak);
 							editor.putInt(getString(R.string.locked_achievements),achieveLock);
@@ -310,6 +331,13 @@ public class GameScreenActivity extends Activity {
 						editor.commit();
 					}else{
 						SharedPreferences.Editor editor = sharedPref.edit();
+						System.out.println(globalCaptFlag+" "+newHighScore+" "+easyAchievements);
+						if(!globalCaptFlag && newHighScore>100 && achieveLock>=18 && easyAchievements.charAt(18)=='0'){
+							System.out.println("188888888888888 athara");
+							editor.putString(getString(R.string.achievements),  easyAchievements.substring(0,18)+'1'+easyAchievements.substring(19));
+							editor.commit();
+							achieveLock++;
+						}
 						editor.putInt(getString(R.string.estreak),0);
 						editor.commit();
 					}
@@ -326,51 +354,55 @@ public class GameScreenActivity extends Activity {
 						editor1.putInt(getString(R.string.medium_high_score),newHighScore);
 						editor1.commit();
 					}
+					wins = sharedPref.getInt(getString(R.string.mWins), 0);
 					if(!lost){
 						maxStreak = sharedPref.getInt(getString(R.string.Maxmstreak), 0);
 						currentStreak = sharedPref.getInt(getString(R.string.mstreak), 0)+1;
-
-						wins = sharedPref.getInt(getString(R.string.mWins), 0);
 						SharedPreferences.Editor editor1 = sharedPref.edit();
 						editor1.putInt(getString(R.string.mWins),wins+1);
 						editor1.commit();
-						String mediumAchievements =  sharedPref.getString(getString(R.string.achievements), achievements);
+						wins = sharedPref.getInt(getString(R.string.mWins), 0);
 						int mediumIndices[] = {4,5,6,7,17};
+						String mediumAchievements = null;
 						for (int i:mediumIndices){
+							mediumAchievements =  sharedPref.getString(getString(R.string.achievements), achievements);
 							if(mediumAchievements.charAt(i)!='1'){
 								editor = sharedPref.edit();
 								switch(i){
 								
 									case 4://30 games in medium
-										if(achieveLock<4)
+										System.out.println("was here");
+										if(achieveLock<5)
 											break;
-										if(wins>=30){
-											editor.putString(getString(R.string.achievements),  mediumAchievements.substring(0,3)+'1'+mediumAchievements.substring(4));
+										System.out.println("was here too");
+										if(wins>=1 && mediumAchievements.charAt(4)=='0'){
+											System.out.println("was here also");
+											editor.putString(getString(R.string.achievements),  mediumAchievements.substring(0,4)+'1'+mediumAchievements.substring(5));
 											editor.commit();
 											achieveLock++;
 										}
 										break;
 									case 5:
-										if(achieveLock<5)
+										if(achieveLock<5 || mediumAchievements.charAt(5)=='1')
 											break;
 										//250 captures medium
-										if(captures+capture>=250){
-											editor.putString(getString(R.string.achievements),  mediumAchievements.substring(0,5)+'1'+mediumAchievements.charAt(6));
+										if(captures+capture>=5){
+											editor.putString(getString(R.string.achievements),  mediumAchievements.substring(0,5)+'1'+mediumAchievements.substring(6));
 											editor.commit();
 											achieveLock++;
 										}
 										break;
 									case 6://Streak 10 medium
-										if(achieveLock<6)
+										if(achieveLock<6 || mediumAchievements.charAt(6)=='1')
 											break;
-										if(currentStreak>=10){
+										if(currentStreak>=1){
 											editor.putString(getString(R.string.achievements),   mediumAchievements.substring(0,6)+'1'+mediumAchievements.substring(7));
 											editor.commit();
 											achieveLock++;
 										}
 										break;
 									case 7://Make 1000 points in Medium
-										if(achieveLock<7)
+										if(achieveLock<7 || mediumAchievements.charAt(7)=='1')
 											break;
 										if(newHighScore>=1000){
 											editor.putString(getString(R.string.achievements),  mediumAchievements.substring(0,7)+'1'+mediumAchievements.substring(8));
@@ -379,33 +411,54 @@ public class GameScreenActivity extends Activity {
 										}
 										break;
 									case 17://Have a single white Panda in Medium mode
-										if(achieveLock>=17){
-											int count = 0;
-											anish: for(int k=0;k<5;k++)
-											{	
-												for(int j=0;j<5;j++){
-													if (playerState[k][j]=='O')
-													{
-														count++;
-														if(count==2)
-															break anish;
-													}
-												}
-												if (count==1)
-												{
-													editor.putString(getString(R.string.achievements),  mediumAchievements.substring(0,17)+'1'+mediumAchievements.substring(18));
-													editor.commit();
-													achieveLock++;
-													
-												}
-										}
-								}
+//										if(achieveLock>=17){
+//											int count = 0;
+//											anish: for(int k=0;k<5;k++)
+//											{	
+//												for(int j=0;j<5;j++){
+//													if (playerState[k][j]=='O')
+//													{
+//														count++;
+//														if(count==2)
+//															break anish;
+//													}
+//												}
+//												if (count==1)
+//												{
+//													editor.putString(getString(R.string.achievements),  mediumAchievements.substring(0,17)+'1'+mediumAchievements.substring(18));
+//													editor.commit();
+//													achieveLock++;
+//													
+//												}
+//										}
+//								}
 								}
 							}
 						}
 						
 						editor1 = sharedPref.edit();
-						
+						//check for loss achievement
+						if(achieveLock>=17 && mediumAchievements.charAt(17)=='0'){
+							int count = 0;
+							anish: for(int k=0;k<5;k++)
+							{	
+								for(int j=0;j<5;j++){
+									if (playerState[k][j]=='O')
+									{
+										count++;
+										if(count==2)
+											break anish;
+									}
+								}
+								if (count==1)
+								{
+									editor1.putString(getString(R.string.achievements),  mediumAchievements.substring(0,17)+'1'+mediumAchievements.substring(18));
+									editor1.commit();
+									achieveLock++;
+									
+								}
+							}
+						}
 						if(currentStreak>maxStreak){
 							editor1.putInt(getString(R.string.Maxmstreak),currentStreak);
 							editor1.putInt(getString(R.string.locked_achievements),achieveLock);
@@ -441,52 +494,54 @@ public class GameScreenActivity extends Activity {
 						SharedPreferences.Editor editor2 = sharedPref.edit();
 						editor2.putInt(getString(R.string.dWins),wins+1);
 						editor2.commit();
+						wins = sharedPref.getInt(getString(R.string.dWins), 0);
 						String hardAchievements =  sharedPref.getString(getString(R.string.achievements), achievements);
 						int hardIndices[] = {8,9,10,11,19};
 						for (int i: hardIndices){
+							hardAchievements =  sharedPref.getString(getString(R.string.achievements), achievements);
 							if(hardAchievements.charAt(i)!='1'){
 								editor = sharedPref.edit();
 								switch(i){
 								
 									case 8://20 games in hard
-										if(achieveLock<8)
+										if(achieveLock<8 || hardAchievements.charAt(8)=='1')
 											break;
-										if(wins==20){
+										if(wins>=1){
 											editor.putString(getString(R.string.achievements),  hardAchievements.substring(0,8)+'1'+hardAchievements.substring(9));
 											editor.commit();
 											achieveLock++;
 										}
 										break;
 									case 9://250 captures hard
-										if(achieveLock<9)
+										if(achieveLock<9 || hardAchievements.charAt(9)=='1')
 											break;
-										if(captures+capture >= 50){
+										if(captures+capture >= 5){
 											editor.putString(getString(R.string.achievements),  hardAchievements.substring(0,9)+'1'+hardAchievements.substring(10));
 											editor.commit();
 											achieveLock++;
 										}
 										break;
 									case 10:
-										if(achieveLock<10)
+										if(achieveLock<10 || hardAchievements.charAt(10)=='1')
 											break;
 										//Streak 7 hard
-										if(currentStreak==10){
+										if(currentStreak>=1){
 												editor.putString(getString(R.string.achievements),  hardAchievements.substring(0,10)+'1'+hardAchievements.substring(11));
 												editor.commit();
 												achieveLock++;
 											}
 										break;
 									case 11://Make 900 points in hard
-										if(achieveLock<11)
+										if(achieveLock<11 || hardAchievements.charAt(11)=='1')
 											break;
-										if(newHighScore>=900){
+										if(newHighScore>=500){
 											editor.putString(getString(R.string.achievements),  hardAchievements.substring(0,11)+'1'+hardAchievements.substring(12));
 											editor.commit();
 											achieveLock++;
 										}
 										break;
 									case 19://Game or streak  won without Undo for Hard
-										if(achieveLock<19)
+										if(achieveLock<19 || hardAchievements.charAt(19)=='1')
 											break;
 										if(!undoUsed){
 											editor.putString(getString(R.string.achievements),  hardAchievements.substring(0,19)+'1'+hardAchievements.substring(0,20));
@@ -534,46 +589,46 @@ public class GameScreenActivity extends Activity {
 							SharedPreferences.Editor editor4 = sharedPref.edit();
 							editor4.putInt(getString(R.string.exWins),wins+1);
 							editor4.commit();
-							
+							wins = sharedPref.getInt(getString(R.string.exWins), 0);
 							String expertAchievements =  sharedPref.getString(getString(R.string.achievements), achievements);
 							int expertIndices[]={12,13,14,15};
 							for (int i:expertIndices){
+								expertAchievements =  sharedPref.getString(getString(R.string.achievements), achievements);
 								if(expertAchievements.charAt(i)!='1'){
 									editor = sharedPref.edit();
 									switch(i){
-									
 										case 12://15 games in expert
-											if(achieveLock<12)
+											if(achieveLock<12 || expertAchievements.charAt(12)=='1')
 												break;
-											if(wins==15){
+											if(wins>=1){
 												editor.putString(getString(R.string.achievements),  expertAchievements.substring(0,12)+'1'+expertAchievements.substring(13));
 												editor.commit();
 												achieveLock++;
 											}
 											break;
 										case 13://250 captures expert
-											if(achieveLock<13)
+											if(achieveLock<13 || expertAchievements.charAt(13)=='1')
 												break;
-											if(capture+captures>=50){
+											if(capture+captures>=5){
 												editor.putString(getString(R.string.achievements),  expertAchievements.substring(0,13)+'1'+expertAchievements.substring(14));
 												editor.commit();
 												achieveLock++;
 											}
 											break;
 										case 14:
-											if(achieveLock<14)
+											if(achieveLock<14 || expertAchievements.charAt(14)=='1')
 												break;
 											//Streak 7 expert
-											if(currentStreak==10){
+											if(currentStreak>=1){
 													editor.putString(getString(R.string.achievements),  expertAchievements.substring(0,14)+'1'+expertAchievements.substring(15));
 													editor.commit();
 													achieveLock++;
 												}
 											break;
 										case 15://Make 900 points in expert
-											if(achieveLock<15)
+											if(achieveLock<15 || expertAchievements.charAt(15)=='1')
 												break;
-											if(newHighScore>=900){
+											if(newHighScore>=400){
 												editor.putString(getString(R.string.achievements),  expertAchievements.substring(0,15)+'1'+expertAchievements.substring(16));
 												editor.commit();
 												achieveLock++;
@@ -611,9 +666,8 @@ public class GameScreenActivity extends Activity {
 		   }
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		sharedPref = this.getSharedPreferences("Shared Preference",
-				Context.MODE_PRIVATE);
-		achieveLock = sharedPref.getInt(getString(R.string.locked_achievements),3);
+		sharedPref = this.getSharedPreferences("Shared Preference", Context.MODE_PRIVATE);
+		achieveLock = sharedPref.getInt(getString(R.string.locked_achievements),20);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		logic = new AlphaLogic();
 		singleplayer = getIntent().getBooleanExtra("single_player", true);
@@ -796,6 +850,7 @@ public class GameScreenActivity extends Activity {
 						
 							boolean lost = logic.getScore(pScore, playerState, 'X') > logic.getScore(pScore, playerState, 'O');
 							gameEndSave(lost);
+							
 							v = View.inflate(GameScreenActivity.this, R.layout.dialog, null);
 
 							 postStatusUpdateButton = (ImageView) v.findViewById(R.id.postStatusUpdateButton);
@@ -855,7 +910,8 @@ public class GameScreenActivity extends Activity {
 									
 								}
 							});
-					
+						
+							
 						}
 						else{
 							new Handler().postDelayed(new Runnable() {
@@ -863,7 +919,7 @@ public class GameScreenActivity extends Activity {
 							    public void run() {
 									new Task2().execute();
 							    }
-							}, 3000);
+							}, 2000);
 						}
 					}
 				} else {
@@ -1064,6 +1120,7 @@ public class GameScreenActivity extends Activity {
     }
 
 	private void performPublish(PendingAction action, boolean allowNoToken) {
+			
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken != null || allowNoToken) {
             pendingAction = action;
@@ -1138,7 +1195,13 @@ public class GameScreenActivity extends Activity {
 		gridView.setAdapter(adapter);
 
 	}
-
+	
+	@Override
+	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+	    super.onActivityResult(requestCode, resultCode, data);
+	    callbackManager.onActivityResult(requestCode, resultCode, data);
+	}
+	
 		// The definition of our task class
 	   private class Task2 extends AsyncTask<String, Integer, Void> {
 		   @Override
