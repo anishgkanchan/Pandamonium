@@ -22,13 +22,13 @@ public class Options2Activity extends Activity {
 	SharedPreferences sharedPref;
 	private Context mContext;
 	private TextView txtDifficulty;
+	boolean soundFlag = true;
 	private String[] difficulty= new String[]{"Easy","Medium","Difficult","Expert"};
 	int lock;
 	int count = 0;
 	
     @Override
     protected void onResume() {
-    	// TODO Auto-generated method stub
     	super.onResume();
     	lock = sharedPref.getInt(getString(R.string.difficulty_lock),0);
     }
@@ -47,6 +47,22 @@ public class Options2Activity extends Activity {
 		btnmPlayer = (Button) findViewById(R.id.multiPlayer);
 		btnStats = (Button) findViewById(R.id.score);
 		btnAchievements = (Button) findViewById(R.id.achievements);
+		final ImageView imgSound = (ImageView) findViewById(R.id.img_sound);
+				
+		imgSound.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				if(soundFlag)
+				{
+					soundFlag = false;
+					imgSound.setImageResource(R.drawable.audio_off);
+				} else{
+					soundFlag = true;
+					imgSound.setImageResource(R.drawable.audio_on);
+				}
+			}
+				
+		});
 		
 		final ImageView imgLeft = (ImageView) findViewById(R.id.lft_arrow);
 		final ImageView imgRight = (ImageView) findViewById(R.id.rght_arrow);
@@ -55,7 +71,6 @@ public class Options2Activity extends Activity {
 		imgLeft.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				imgRight.setVisibility(View.VISIBLE);
 				if(count>0){
 					count--;
@@ -71,7 +86,6 @@ public class Options2Activity extends Activity {
 		imgRight.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				if(lock != 0)
 					imgLeft.setVisibility(View.VISIBLE);
 				if(count<3){
@@ -93,6 +107,7 @@ public class Options2Activity extends Activity {
 				Intent i = new Intent(mContext, GameScreenActivity.class);
 				i.putExtra("single_player", true);
 				i.putExtra("difficulty", (count+1));
+				i.putExtra("audio", soundFlag);
 				startActivity(i);			
 			}
 		});
@@ -102,6 +117,7 @@ public class Options2Activity extends Activity {
 			public void onClick(View v) {
 				Intent i = new Intent(mContext, GameScreenActivity.class);
 				i.putExtra("single_player", false);
+				i.putExtra("audio", soundFlag);
 				startActivity(i);
 			}
 		});

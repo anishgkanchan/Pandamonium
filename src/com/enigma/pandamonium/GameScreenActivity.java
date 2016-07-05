@@ -9,7 +9,6 @@ import java.util.Random;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.AnimationDrawable;
@@ -103,7 +102,7 @@ public class GameScreenActivity extends Activity {
 	int capture = 0;
 	Resources res;
 	int achieveLock;
-	
+	boolean audioFlag = true;
 	private final String PENDING_ACTION_BUNDLE_KEY =
             "com.example.hellofacebook:PendingAction";
 
@@ -113,7 +112,9 @@ public class GameScreenActivity extends Activity {
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
 	MediaPlayer mediaPlayer = null;
-    private FacebookCallback<Sharer.Result> shareCallback = new FacebookCallback<Sharer.Result>() {
+	float mpVol = 0.0f;
+    
+	private FacebookCallback<Sharer.Result> shareCallback = new FacebookCallback<Sharer.Result>() {
     	@Override
         public void onCancel() {
             Log.d("HelloFacebook", "Canceled");
@@ -174,7 +175,6 @@ public class GameScreenActivity extends Activity {
 			
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				dialog.dismiss();
 			}
 		});
@@ -620,7 +620,7 @@ public class GameScreenActivity extends Activity {
 		logic = new AlphaLogic();
 		singleplayer = getIntent().getBooleanExtra("single_player", true);
 		difficulty = getIntent().getIntExtra("difficulty", 1);
-		
+		audioFlag = getIntent().getBooleanExtra("audio", true);
 		FacebookSdk.sdkInitialize(this.getApplicationContext());
 		callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
@@ -632,17 +632,40 @@ public class GameScreenActivity extends Activity {
             pendingAction = PendingAction.valueOf(name);
         }
 
-    	  mediaPlayer = MediaPlayer.create(this, R.raw.musicforpanda);
-    	  mediaPlayer.setLooping(true);
-    	  mediaPlayer.start();
+        if(audioFlag){
+	    	  mediaPlayer = MediaPlayer.create(this, R.raw.musicforpanda);
+	    	  mediaPlayer.setVolume(mpVol, mpVol);
+	    	  mediaPlayer.setLooping(true);
+	    	  mediaPlayer.start();
+	    	 final Handler h = new Handler();
+	    	 h.post(new Runnable() {
+	    	     public void run() {
+	
+	    	    	double diff = mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition();
+	              	Log.i("","----"+diff+" inside handler");
+	    	             if (diff<=10000 && diff>=9000) {
+	    	            	 mpVol += .2f;
+	    	            	 mediaPlayer.setVolume(mpVol, mpVol);
+	    	                 h.postDelayed(this, 500);
+	    	                 Log.i("","---- increasing");
+	    	             }
+	    	             else if(diff<=1000 && diff>=0) {
+	    	            	 mpVol -= .2f;
+	    	            	 mediaPlayer.setVolume(mpVol, mpVol);
+	    	                 h.postDelayed(this, 500);
+	 	                 	 Log.i("","---- deccreasing");
+	    	             }
+	    	             else{
+	
+	  	                 	Log.i("","---- no change");
+	    	                h.postDelayed(this, 500);
+	    	             }
+	    	     }
+	    	 });
+        }
+    	 //if diff is between 10 and 7, increase
+    	 //if diff is between 3 and 0, decrease
         //doBindService();
-        
-        //music
-        //Intent music = new Intent();
-        //music.setClass(this,MusicService.class);
-        //startService(music);
-        
-        //music ends
         
         canPresentShareDialog = ShareDialog.canShow(
                 ShareLinkContent.class);
@@ -1226,13 +1249,12 @@ public class GameScreenActivity extends Activity {
 		   
 		 
 	   }
-	   private ServiceConnection serviceConnection = null;
-
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		mediaPlayer.stop();
+		 if(audioFlag)
+			 mediaPlayer.stop();
 	}
 }
 //300*200 hdpi
