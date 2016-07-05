@@ -19,8 +19,6 @@ public class ListViewAdapter extends BaseAdapter {
 	private Context context;
 	private int layoutResourceId;
 	Resources res;
-	private LayoutInflater mLayoutInflater = null;
-	
 	/*
 	 * 1. won easy
 	 * 2. x captures easy
@@ -39,7 +37,7 @@ public class ListViewAdapter extends BaseAdapter {
 	 * 15. x streak expert
 	 * 16. x points expert
 	 * 17. facebook share
-	 * 18. win easy without capture
+	 * 18. one man standing medium
 	 * 19. complete easy with 100 and no enemy capture
 	 * 20. game won hard without undo
 	 * 21. panda slayer
@@ -51,13 +49,11 @@ public class ListViewAdapter extends BaseAdapter {
 	public ListViewAdapter(Context context, int resourceId, List<AchieveState> list) {
 		sharedPref = context.getSharedPreferences("Shared Preference", Context.MODE_PRIVATE);
 		achievements =  sharedPref.getString(context.getString(R.string.achievements), "000000000000000000000");
-		achieveLock =  sharedPref.getInt(context.getString(R.string.locked_achievements), 20);
+		achieveLock =  sharedPref.getInt(context.getString(R.string.locked_achievements), 4);
 		this.context = context;
 		res = ((Activity)context).getResources();
 		layoutResourceId = resourceId;
 		mList = (ArrayList<AchieveState>) list;
-		mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		Log.i("TAG","--------"+mList.size());
 	}
 	
 	class ViewHolder {
@@ -139,5 +135,4 @@ public class ListViewAdapter extends BaseAdapter {
 		}
 		return row;
 	}
-
 }

@@ -47,7 +47,7 @@ public class MainFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				System.gc();
-				Intent intent = new Intent(getActivity(), Options2Activity.class);
+				Intent intent = new Intent(getActivity(), OptionsActivity.class);
 				startActivity(intent);
 				
 			}

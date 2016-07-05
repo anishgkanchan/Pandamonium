@@ -46,7 +46,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".Options2Activity"
+            android:name=".OptionsActivity"
             android:label="@string/title_activity_options2"
             android:screenOrientation="portrait" >
         </activity>

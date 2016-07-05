@@ -17,11 +17,11 @@ public class AchievementActivity extends Activity {
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_achievement);
 		ListView lv = (ListView) findViewById(R.id.list_achievements);
-		String []achivementsList = {"50 games won in Easy mode"," 250 captures in Easy mode","A win streak of 15 games in Easy mode", "Get 1000 points in Easy mode in a single game",
-				"30 games won in Medium mode", " 250 captures in Medium mode","A win streak of 10 games in Medium mode","Get 1000 points in Medium mode in a single game",
-				"20 games won in Difficult mode"," 250 captures in Difficult mode","A win streak of 7 games in Difficult mode","Get 900 points in Difficult mode in a single game",
-				"15 games won in Expert mode"," 250 captures in Expert mode","A win streak of 5 games in Expert mode","Get 900 points in Expert mode in a single game",
-				 "Share on Facebook","Have just a single on the board in Medium mode","Complete a game in Easy mode without capturing a single enemy panda with minimum score of 100",
+		String []achivementsList = {"30 games won in Easy mode"," 200 captures in Easy mode","A win streak of 10 games in Easy mode", "Get 1000 points in Easy mode in a single game",
+				"20 games won in Medium mode", " 150 captures in Medium mode","A win streak of 7 games in Medium mode","Get 1000 points in Medium mode in a single game",
+				"15 games won in Difficult mode"," 150 captures in Difficult mode","A win streak of 5 games in Difficult mode","Get 900 points in Difficult mode in a single game",
+				"10 games won in Expert mode"," 150 captures in Expert mode","A win streak of 5 games in Expert mode","Get 800 points in Expert mode in a single game",
+				 "Share on Facebook","Have just a single on the board in Medium mode","Complete a game in Easy mode without capturing a single enemy panda, without undo, and with minimum score of 100",
 				 "Win a game in Difficult mode without using the undo button","Capture all the tiles on the board (All White)"};
 		
 		int []imageIds = new int[]{R.drawable.x_won_easy, R.drawable.x_captures_easy, R.drawable.x_streak_easy, R.drawable.x_points_win_easy,
