@@ -142,9 +142,9 @@ public class GameScreenActivity extends Activity {
 				SharedPreferences.Editor editor = sharedPref.edit();
 				editor.putString(getString(R.string.achievements),  achieve.substring(0,16)+'1'+achieve.substring(17));
 				achieveLock++;
+				Toast.makeText(GameScreenActivity.this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
 				editor.putInt(getString(R.string.locked_achievements), achieveLock);
 				editor.commit();
-				
 			}
             if (result.getPostId() != null) {
                 String title = getString(R.string.success);
@@ -253,7 +253,8 @@ public class GameScreenActivity extends Activity {
 										if(wins>=30 && easyAchievements.charAt(0)=='0'){
 											editor.putString(getString(R.string.achievements),  '1'+easyAchievements.substring(1));
 											editor.commit();
-											achieveLock++;
+											achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 										}
 										break;
 									case 1:
@@ -262,14 +263,16 @@ public class GameScreenActivity extends Activity {
 										if(captures+capture>=200 && easyAchievements.charAt(1)=='0'){
 											editor.putString(getString(R.string.achievements),  easyAchievements.substring(0,1)+'1'+easyAchievements.substring(2));
 											editor.commit();
-											achieveLock++;
+											achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 										}
 										break;
 									case 2://Streak 10 easy
 										if(currentStreak>=10 && easyAchievements.charAt(2)=='0'){
 												editor.putString(getString(R.string.achievements),  easyAchievements.substring(0,2)+'1'+easyAchievements.substring(3));
 												editor.commit();
-												achieveLock++;
+												achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 											}
 										break;
 									case 3:
@@ -277,7 +280,8 @@ public class GameScreenActivity extends Activity {
 										if(newHighScore>=1000 && easyAchievements.charAt(3)=='0'){
 											editor.putString( getString(R.string.achievements),  easyAchievements.substring(0,3)+'1'+ easyAchievements.substring(4));
 											editor.commit();
-											achieveLock++;
+											achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 											
 										}
 									
@@ -303,7 +307,8 @@ public class GameScreenActivity extends Activity {
 											if(flag){
 													editor.putString(getString(R.string.achievements),  easyAchievements.substring(0,20)+'1');
 													editor.commit();
-													achieveLock++;
+													achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 												}
 								}
 							}
@@ -335,7 +340,8 @@ public class GameScreenActivity extends Activity {
 					if(!globalCaptFlag && newHighScore>=100 && achieveLock>=18 && easyAchievements.charAt(18)=='0'){
 						editor.putString(getString(R.string.achievements),  easyAchievements.substring(0,18)+'1'+easyAchievements.substring(19));
 						editor.commit();
-						achieveLock++;
+						achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 					}
 					break;
 				case 2:highScore = sharedPref.getInt(getString(R.string.medium_high_score),0);
@@ -367,7 +373,8 @@ public class GameScreenActivity extends Activity {
 										if(wins>=20 && mediumAchievements.charAt(4)=='0'){
 											editor.putString(getString(R.string.achievements),  mediumAchievements.substring(0,4)+'1'+mediumAchievements.substring(5));
 											editor.commit();
-											achieveLock++;
+											achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 										}
 										break;
 									case 5:
@@ -377,7 +384,8 @@ public class GameScreenActivity extends Activity {
 										if(captures+capture>=5){
 											editor.putString(getString(R.string.achievements),  mediumAchievements.substring(0,5)+'1'+mediumAchievements.substring(6));
 											editor.commit();
-											achieveLock++;
+											achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 										}
 										break;
 									case 6://Streak 7 medium
@@ -386,7 +394,8 @@ public class GameScreenActivity extends Activity {
 										if(currentStreak>=7){
 											editor.putString(getString(R.string.achievements),   mediumAchievements.substring(0,6)+'1'+mediumAchievements.substring(7));
 											editor.commit();
-											achieveLock++;
+											achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 										}
 										break;
 									case 7://Make 1000 points in Medium
@@ -395,7 +404,8 @@ public class GameScreenActivity extends Activity {
 										if(newHighScore>=1000){
 											editor.putString(getString(R.string.achievements),  mediumAchievements.substring(0,7)+'1'+mediumAchievements.substring(8));
 											editor.commit();
-											achieveLock++;
+											achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 										}
 										break;
 									case 17:
@@ -437,7 +447,8 @@ public class GameScreenActivity extends Activity {
 								{
 									editor1.putString(getString(R.string.achievements),  mediumAchievements.substring(0,17)+'1'+mediumAchievements.substring(18));
 									editor1.commit();
-									achieveLock++;
+									achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 									
 								}
 							
@@ -479,7 +490,8 @@ public class GameScreenActivity extends Activity {
 										if(wins>=15){
 											editor.putString(getString(R.string.achievements),  hardAchievements.substring(0,8)+'1'+hardAchievements.substring(9));
 											editor.commit();
-											achieveLock++;
+											achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 										}
 										break;
 									case 9://150 captures hard
@@ -488,7 +500,8 @@ public class GameScreenActivity extends Activity {
 										if(captures+capture >= 150){
 											editor.putString(getString(R.string.achievements),  hardAchievements.substring(0,9)+'1'+hardAchievements.substring(10));
 											editor.commit();
-											achieveLock++;
+											achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 										}
 										break;
 									case 10:
@@ -498,7 +511,8 @@ public class GameScreenActivity extends Activity {
 										if(currentStreak>=5){
 												editor.putString(getString(R.string.achievements),  hardAchievements.substring(0,10)+'1'+hardAchievements.substring(11));
 												editor.commit();
-												achieveLock++;
+												achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 											}
 										break;
 									case 11://Make 900 points in hard
@@ -507,7 +521,8 @@ public class GameScreenActivity extends Activity {
 										if(newHighScore>=900){
 											editor.putString(getString(R.string.achievements),  hardAchievements.substring(0,11)+'1'+hardAchievements.substring(12));
 											editor.commit();
-											achieveLock++;
+											achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 										}
 										break;
 									case 19://Game  won without Undo for Hard
@@ -516,7 +531,8 @@ public class GameScreenActivity extends Activity {
 										if(!undoUsed){
 											editor.putString(getString(R.string.achievements),  hardAchievements.substring(0,19)+'1'+hardAchievements.substring(0,20));
 											editor.commit();
-											achieveLock++;
+											achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 										}
 								}
 							}
@@ -573,7 +589,8 @@ public class GameScreenActivity extends Activity {
 											if(wins>=10){
 												editor.putString(getString(R.string.achievements),  expertAchievements.substring(0,12)+'1'+expertAchievements.substring(13));
 												editor.commit();
-												achieveLock++;
+												achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 											}
 											break;
 										case 13://150 captures expert
@@ -582,7 +599,8 @@ public class GameScreenActivity extends Activity {
 											if(capture+captures>=150){
 												editor.putString(getString(R.string.achievements),  expertAchievements.substring(0,13)+'1'+expertAchievements.substring(14));
 												editor.commit();
-												achieveLock++;
+												achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 											}
 											break;
 										case 14:
@@ -592,7 +610,8 @@ public class GameScreenActivity extends Activity {
 											if(currentStreak>=5){
 													editor.putString(getString(R.string.achievements),  expertAchievements.substring(0,14)+'1'+expertAchievements.substring(15));
 													editor.commit();
-													achieveLock++;
+													achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 												}
 											break;
 										case 15://Make 800 points in expert
@@ -601,7 +620,8 @@ public class GameScreenActivity extends Activity {
 											if(newHighScore>=800){
 												editor.putString(getString(R.string.achievements),  expertAchievements.substring(0,15)+'1'+expertAchievements.substring(16));
 												editor.commit();
-												achieveLock++;
+												achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
+;
 											}
 									}
 								}
@@ -991,10 +1011,10 @@ public class GameScreenActivity extends Activity {
 						list.set(position, object);
 						adapter.notifyDataSetChanged();
 						final String text = String.format(getResources()
-								.getString(R.string.player_score), logic
+								.getString(R.string.player1_score), logic
 								.getScore(pScore, playerState, 'O'));
 						final String data = String.format(getResources()
-								.getString(R.string.opponent_score), logic
+								.getString(R.string.player2_score), logic
 								.getScore(pScore, playerState, 'X'));
 
 						playerScore.setText(text);
@@ -1161,6 +1181,12 @@ public class GameScreenActivity extends Activity {
 	}
 
 	void init() {
+		if(!singleplayer){
+			final String data = String.format(getResources()
+					.getString(R.string.player2_score), logic
+					.getScore(pScore, playerState, 'X'));
+			opponentScore.setText(data);
+		}
 		gameBegan = false;
 		imgAnimTop.setImageDrawable((AnimationDrawable)getResources().getDrawable(R.anim.bg_anim_top));
 		imgAnimTop.post(
@@ -1232,26 +1258,50 @@ public class GameScreenActivity extends Activity {
 							list.get(i).setImage(
 									R.drawable.player2);
 					}
-					final String data = String.format(
-							getResources().getString(
-									R.string.opponent_score),
-							logic.getScore(pScore, playerState,
-									'X'));
-					final String text = String.format(
-							getResources().getString(
-									R.string.player_score),
-							logic.getScore(pScore, playerState,
-									'O'));
-					runOnUiThread(new Runnable() {
-						
-						@Override
-						public void run() {
-							opponentScore.setText(data);
-							playerScore.setText(text);			
-							adapter.notifyDataSetChanged();			
-						}
-					});
-					
+					if(singleplayer)
+					{
+						final String data = String.format(
+								getResources().getString(
+										R.string.opponent_score),
+								logic.getScore(pScore, playerState,
+										'X'));
+						final String text = String.format(
+								getResources().getString(
+										R.string.player_score),
+								logic.getScore(pScore, playerState,
+										'O'));
+						runOnUiThread(new Runnable() {
+							
+							@Override
+							public void run() {
+								opponentScore.setText(data);
+								playerScore.setText(text);			
+								adapter.notifyDataSetChanged();			
+							}
+						});
+					}
+					else{
+
+						final String data = String.format(
+								getResources().getString(
+										R.string.player2_score),
+								logic.getScore(pScore, playerState,
+										'X'));
+						final String text = String.format(
+								getResources().getString(
+										R.string.player1_score),
+								logic.getScore(pScore, playerState,
+										'O'));
+						runOnUiThread(new Runnable() {
+							
+							@Override
+							public void run() {
+								opponentScore.setText(data);
+								playerScore.setText(text);			
+								adapter.notifyDataSetChanged();			
+							}
+						});
+					}
 					playable = true;
 				} 
 				return null;
