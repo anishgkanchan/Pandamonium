@@ -673,38 +673,7 @@ public class GameScreenActivity extends Activity {
             pendingAction = PendingAction.valueOf(name);
         }
 
-        if(audioFlag){
-        	 mpVol = 1;
-	    	 mediaPlayer1 = MediaPlayer.create(this, R.raw.musicforpanda);
-	    	 mediaPlayer1.setVolume(mpVol, mpVol);
-	    	 mediaPlayer1.start();
-	    	 mediaPlayer2 = MediaPlayer.create(this, R.raw.musicforpanda);
-	    	 mediaPlayer2.setVolume(mpVol, mpVol);
-	    	 final Handler h = new Handler();
-	    	 h.post(new Runnable() {
-				
-				@Override
-				public void run() {
-					if(sound==1){
-						double diff = mediaPlayer1.getDuration() - mediaPlayer1.getCurrentPosition();
-						  if (diff<=200 && diff>=0) {
-							  mediaPlayer1.stop();
-							  mediaPlayer2.start();
-							  sound = 2;
-						  }
-					} else{
-						double diff = mediaPlayer2.getDuration() - mediaPlayer2.getCurrentPosition();
-						  if (diff<=200 && diff>=0) {
-							  mediaPlayer2.stop();
-							  mediaPlayer1.start();
-							  sound = 1;
-						  }
-					}
-					 h.postDelayed(this, 150);
-				}
-			});
-	    	
-        }
+     
         canPresentShareDialog = ShareDialog.canShow(
                 ShareLinkContent.class);
 
@@ -1355,12 +1324,52 @@ public class GameScreenActivity extends Activity {
 		 }
 	}
 	@Override
-	protected void onResume(){
-		super.onResume();
+	protected void onStop(){
+		super.onStop();
 		 if(audioFlag)
 		 {
 			 sound = 1;
-			 mediaPlayer1.start();
+			 mediaPlayer1.stop();
+			 mediaPlayer2.stop();
+		 }
+	}
+	@Override
+	protected void onStart(){
+		super.onStart();
+		 if(audioFlag)
+		 {
+			   if(audioFlag){
+		        	 mpVol = 1;
+			    	 mediaPlayer1 = MediaPlayer.create(this, R.raw.musicforpanda);
+			    	 mediaPlayer1.setVolume(mpVol, mpVol);
+			    	 mediaPlayer1.start();
+			    	 mediaPlayer2 = MediaPlayer.create(this, R.raw.musicforpanda);
+			    	 mediaPlayer2.setVolume(mpVol, mpVol);
+			    	 final Handler h = new Handler();
+			    	 h.post(new Runnable() {
+						
+						@Override
+						public void run() {
+							if(sound==1){
+								double diff = mediaPlayer1.getDuration() - mediaPlayer1.getCurrentPosition();
+								  if (diff<=200 && diff>=0) {
+									  mediaPlayer1.stop();
+									  mediaPlayer2.start();
+									  sound = 2;
+								  }
+							} else{
+								double diff = mediaPlayer2.getDuration() - mediaPlayer2.getCurrentPosition();
+								  if (diff<=200 && diff>=0) {
+									  mediaPlayer2.stop();
+									  mediaPlayer1.start();
+									  sound = 1;
+								  }
+							}
+							 h.postDelayed(this, 150);
+						}
+					});
+			    	
+		        }
 		 }
 	}
 	
