@@ -1115,7 +1115,7 @@ public class GameScreenActivity extends Activity {
                 .setContentTitle("I just won a match in Pandamonium!")
                 .setContentDescription(
                 		
-                        "I defeated the evil pandas in the "+mode+" mode and scored "+newHighScore+".I challenge you to beat it!")
+                        "I defeated the evil pandas in the "+mode+" mode and scored "+newHighScore+". I challenge you to beat it!")
                 .setContentUrl(Uri.parse("https://play.google.com/apps/testing/com.enigma.pandamonium"))
                 .build();
         if (canPresentShareDialog) {
@@ -1348,8 +1348,20 @@ public class GameScreenActivity extends Activity {
 		super.onPause();
 		 if(audioFlag)
 		 {
+
+			 sound = 1;
 			 mediaPlayer1.stop();
 			 mediaPlayer2.stop();
 		 }
 	}
+	@Override
+	protected void onResume(){
+		super.onResume();
+		 if(audioFlag)
+		 {
+			 sound = 1;
+			 mediaPlayer1.start();
+		 }
+	}
+	
 }
