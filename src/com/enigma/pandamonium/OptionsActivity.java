@@ -23,7 +23,7 @@ public class OptionsActivity extends Activity {
 	private Context mContext;
 	private TextView txtDifficulty;
 	boolean soundFlag = true;
-	private String[] difficulty= new String[]{"Easy","Medium","Difficult","Expert"};
+	private String[] difficulty= new String[]{"Easy","Medium","Hard","Expert"};
 	int lock;
 	int count = 0;
 	

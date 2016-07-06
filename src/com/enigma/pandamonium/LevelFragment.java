@@ -141,7 +141,9 @@ import android.widget.Toast;
 		            }
 		            txtWinScore.setText(winProgress+"");
 		            txtLossScore.setText((gamesPlayed-winProgress)+"");
-		            txtHighScore.setText(highScore+"");            
+		            txtHighScore.setText(highScore+"");
+		            txtCurrStreak.setText(currStreak+"");
+		            txtCaptures.setText(captures+"");            
 		            txtStreak.setText(maxStreak+"");
 		            float f = (float)(winProgress);
 		            if(winProgress == gamesPlayed-winProgress){
