@@ -1073,7 +1073,7 @@ public class GameScreenActivity extends Activity {
                 .setContentDescription(
                 		
                         "I defeated the evil pandas in the "+mode+" mode and scored "+newHighScore+". I challenge you to beat it!")
-                .setContentUrl(Uri.parse("https://play.google.com/apps/testing/com.enigma.pandamonium"))
+                .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.enigma.pandamonium"))
                 .build();
         if (canPresentShareDialog) {
             shareDialog.show(linkContent);
