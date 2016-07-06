@@ -53,29 +53,6 @@ public class GameScreenActivity extends Activity {
 	char playerState[][] = new char[][] { { '*', '*', '*', '*', '*' },
 			{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' },
 			{ '*', '*', '*', '*', '*' }, { '*', '*', '*', '*', '*' } };
-	 String[] tasks = new String[]{"Capture every tile in easy mode",
-	 "Win 50 games in Easy mode",
-	 "Win 30 game Medium mode",
-	 "Win 20 games in Difficult mode",
-	 "Win 15 games in Expert mode",
-	 "Achieve a winning streak of 15 games in Easy mode",
-	 "Achieve a winning streak of 10 games in Medium mode",
-	 "Achieve a winning streak of 7 games in Difficult mode",
-	 "Achieve a winning streak of 7 games in Expert mode",
-	 "Capture 250 enemies in Easy mode",
-	 "Capture 250 enemies in Medium mode",
-	 "Capture 250 enemies in Difficult mode",
-	 "Capture 250 enemies in Expert mode",
-	 "Win a game without undo for Hard mode",
-	 "Share a post on Facebook",
-	 "Win against Easy without getting yourself captured",
-	 "Complete a game without capturing enemy with a minimum score of 100",
-	 "Make 1000 points in Easy in a single game",
-	 "Make 1000 points in Medium in a single game",
-	 "Make 900 points in Hard in a single game",
-	 "Make 900 points in Expert in a single game"};
-	
-	
 	View v;
 	SharedPreferences sharedPref;
 	//must be changes as they are added
@@ -735,15 +712,28 @@ public class GameScreenActivity extends Activity {
 
 						@Override
 						public void run() {
-							final String text = String.format(getResources()
-									.getString(R.string.player_score), logic
-									.getScore(pScore, playerState, 'O'));
-							final String data = String.format(getResources()
-									.getString(R.string.opponent_score), logic
-									.getScore(pScore, playerState, 'X'));
-
-							playerScore.setText(text);
-							opponentScore.setText(data);
+							if(singleplayer){
+							
+								final String text = String.format(getResources()
+										.getString(R.string.player_score), logic
+										.getScore(pScore, playerState, 'O'));
+								final String data = String.format(getResources()
+										.getString(R.string.opponent_score), logic
+										.getScore(pScore, playerState, 'X'));
+	
+								playerScore.setText(text);
+								opponentScore.setText(data);
+							} else{
+								final String text = String.format(getResources()
+										.getString(R.string.player1_score), logic
+										.getScore(pScore, playerState, 'O'));
+								final String data = String.format(getResources()
+										.getString(R.string.player2_score), logic
+										.getScore(pScore, playerState, 'X'));
+	
+								playerScore.setText(text);
+								opponentScore.setText(data);
+							}
 						}
 					};
 					new Handler().postDelayed(r1, 0);
@@ -1150,12 +1140,7 @@ public class GameScreenActivity extends Activity {
 	}
 
 	void init() {
-		if(!singleplayer){
-			final String data = String.format(getResources()
-					.getString(R.string.player2_score), logic
-					.getScore(pScore, playerState, 'X'));
-			opponentScore.setText(data);
-		}
+		
 		gameBegan = false;
 		imgAnimTop.setImageDrawable((AnimationDrawable)getResources().getDrawable(R.anim.bg_anim_top));
 		imgAnimTop.post(
@@ -1172,11 +1157,18 @@ public class GameScreenActivity extends Activity {
 		list = new ArrayList<CellState>();
 		prevList = new ArrayList<CellState>();
 		Resources res = getResources();
-		String playertext = String.format(res.getString(R.string.player_score),
-				0);
-		String opponentText = String.format(
-				res.getString(R.string.opponent_score), 0);
+		String playertext = "";
+		String opponentText = "";
 
+		if(singleplayer){
+			opponentText = String.format(res.getString(R.string.opponent_score), 0);
+			playertext = String.format(res.getString(R.string.player_score),
+					0);
+
+		}else{
+			playertext = String.format(res.getString(R.string.player1_score),0);
+			opponentText = String.format(res.getString(R.string.player2_score), 0);
+		}
 		playerScore.setText(playertext);
 		opponentScore.setText(opponentText);
 		Random rand = new Random();
