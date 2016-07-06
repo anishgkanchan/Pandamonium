@@ -445,11 +445,10 @@ public class GameScreenActivity extends Activity {
 						editor2.putInt(getString(R.string.difficult_high_score),newHighScore);
 						editor2.commit();
 					}
+					wins = sharedPref.getInt(getString(R.string.dWins), 0);
 					if(!lost){
 						maxStreak = sharedPref.getInt(getString(R.string.Maxdstreak), 0);
 						currentStreak = sharedPref.getInt(getString(R.string.dstreak), 0)+1;
-
-						wins = sharedPref.getInt(getString(R.string.dWins), 0);
 						SharedPreferences.Editor editor2 = sharedPref.edit();
 						editor2.putInt(getString(R.string.dWins),wins+1);
 						editor2.commit();
@@ -544,12 +543,10 @@ public class GameScreenActivity extends Activity {
 						editor3.putInt(getString(R.string.expert_high_score),newHighScore);
 						editor3.commit();
 						}
+					wins = sharedPref.getInt(getString(R.string.exWins), 0);
 						if(!lost){
 							maxStreak = sharedPref.getInt(getString(R.string.Maxexstreak), 0);
 							currentStreak = sharedPref.getInt(getString(R.string.exstreak), 0)+1;
-							
-
-							wins = sharedPref.getInt(getString(R.string.exWins), 0);
 							SharedPreferences.Editor editor4 = sharedPref.edit();
 							editor4.putInt(getString(R.string.exWins),wins+1);
 							editor4.commit();
