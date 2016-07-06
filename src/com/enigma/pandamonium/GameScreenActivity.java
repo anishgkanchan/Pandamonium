@@ -1069,11 +1069,9 @@ public class GameScreenActivity extends Activity {
 				mode = "expert";
 		}
         ShareLinkContent linkContent = new ShareLinkContent.Builder()
+        .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.enigma.pandamonium"))
                 .setContentTitle("I just won a match in Pandamonium!")
-                .setContentDescription(
-                		
-                        "I defeated the evil pandas in the "+mode+" mode and scored "+newHighScore+". I challenge you to beat it!")
-                .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.enigma.pandamonium"))
+                .setContentDescription( "I defeated the evil pandas in the "+mode+" mode and scored "+newHighScore+". I challenge you to beat it!")
                 .build();
         if (canPresentShareDialog) {
             shareDialog.show(linkContent);
