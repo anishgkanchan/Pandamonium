@@ -211,6 +211,7 @@ public class GameScreenActivity extends Activity {
 						editor.commit();
 					}
 					String easyAchievements = sharedPref.getString(getString(R.string.achievements), achievements);
+					wins = sharedPref.getInt(getString(R.string.eWins), 0);
 					if(!lost){
 						maxStreak = sharedPref.getInt(getString(R.string.Maxestreak), 0);
 						currentStreak = sharedPref.getInt(getString(R.string.estreak), 0);
