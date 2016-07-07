@@ -828,13 +828,14 @@ public class GameScreenActivity extends Activity {
 							v = View.inflate(GameScreenActivity.this, R.layout.dialog, null);
 
 							 postStatusUpdateButton = (ImageView) v.findViewById(R.id.postStatusUpdateButton);
+							 if(logic.getScore(pScore, playerState, 'X') < logic
+									.getScore(pScore, playerState, 'O'))
 							 postStatusUpdateButton.setVisibility(View.VISIBLE);
 						        postStatusUpdateButton.setOnClickListener(new View.OnClickListener() {
 						            public void onClick(View view) {
 						                onClickPostStatusUpdate();
 						            }
 						        });
-						        
 							TextView title = (TextView)v.findViewById(R.id.title);
 							TextView message = (TextView)v.findViewById(R.id.message);
 							Button btnYes = (Button)v.findViewById(R.id.btn_yes);
@@ -1068,10 +1069,18 @@ public class GameScreenActivity extends Activity {
 			case 4:
 				mode = "expert";
 		}
+        String message = "";
+        if (singleplayer){
+        	message = "Go ahead, brag about your win! "+newHighScore+" points in "+mode+" mode!";
+        }
+        else{
+
+        	message = "Go ahead, brag about your win! Let your friends know your winning story!";
+        }
         ShareLinkContent linkContent = new ShareLinkContent.Builder()
         .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.enigma.pandamonium"))
-                .setContentTitle("I just won a match in Pandamonium!")
-                .setContentDescription( "I defeated the evil pandas in the "+mode+" mode and scored "+newHighScore+". I challenge you to beat it!")
+        .setContentDescription("")
+                .setContentTitle(message)
                 .build();
         if (canPresentShareDialog) {
             shareDialog.show(linkContent);
