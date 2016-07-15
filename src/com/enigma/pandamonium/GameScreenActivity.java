@@ -346,7 +346,7 @@ public class GameScreenActivity extends Activity {
 								switch(i){
 								
 									case 4://20 games in medium
-										if(achieveLock<5)
+										if(achieveLock<4)
 											break;
 										if(wins>=20 && mediumAchievements.charAt(4)=='0'){
 											editor.putString(getString(R.string.achievements),  mediumAchievements.substring(0,4)+'1'+mediumAchievements.substring(5));
@@ -356,10 +356,10 @@ public class GameScreenActivity extends Activity {
 										}
 										break;
 									case 5:
-										if(achieveLock<150 || mediumAchievements.charAt(5)=='1')
+										if(achieveLock<5 || mediumAchievements.charAt(5)=='1')
 											break;
 										//150 captures medium
-										if(captures+capture>=5){
+										if(captures+capture>=150){
 											editor.putString(getString(R.string.achievements),  mediumAchievements.substring(0,5)+'1'+mediumAchievements.substring(6));
 											editor.commit();
 											achieveLock++;		Toast.makeText(this, "You have completed an achievement", Toast.LENGTH_SHORT).show();
@@ -1073,14 +1073,11 @@ public class GameScreenActivity extends Activity {
         if (singleplayer){
         	message = "Go ahead, brag about your win! "+newHighScore+" points in "+mode+" mode!";
         }
-        else{
-
-        	message = "Go ahead, brag about your win! Let your friends know your winning story!";
-        }
+        message = "Go ahead, brag about your win! Let your friends know your winning story! \n\n https://play.google.com/store/apps/details?id=com.enigma.pandamonium";
         ShareLinkContent linkContent = new ShareLinkContent.Builder()
-        .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.enigma.pandamonium"))
-        .setContentDescription("")
-                .setContentTitle(message)
+        .setContentDescription(message)
+                .setContentTitle("I just won")
+                .setImageUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.enigma.pandamonium"))
                 .build();
         if (canPresentShareDialog) {
             shareDialog.show(linkContent);
